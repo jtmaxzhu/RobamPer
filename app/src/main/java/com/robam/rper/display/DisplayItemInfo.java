@@ -1,13 +1,11 @@
-package com.robam.shared.display;
+package com.robam.rper.display;
 
-import com.robam.shared.R;
-import com.robam.shared.display.items.base.DisplayItem;
-import com.robam.shared.display.items.base.Displayable;
+import com.robam.rper.R;
+import com.robam.rper.display.items.base.DisplayItem;
+import com.robam.rper.display.items.base.Displayable;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.robam.shared.R.drawable.performance_icon;
 
 /**
  * author : liuxiaohu

@@ -1,4 +1,6 @@
-package com.robam.shared.display.items.base;
+package com.robam.rper.display.items.base;
+
+
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public interface Displayable {
      * 实时数据获取
      *
      * @return 实时数据
-     * @throws Exception
+     * @throws
      */
     String getCurrentInfo() throws Exception;
 

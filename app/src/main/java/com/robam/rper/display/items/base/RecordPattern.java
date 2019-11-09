@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.robam.shared.display.items.base;
+package com.robam.rper.display.items.base;
 
 
 public class RecordPattern {
