@@ -3,16 +3,26 @@ package com.robam.rper.display;
 import android.content.Context;
 
 
+import com.robam.rper.annotation.LocalService;
+import com.robam.rper.display.items.base.DisplayItem;
 import com.robam.rper.display.items.base.Displayable;
 import com.robam.rper.display.items.base.RecordPattern;
 import com.robam.rper.service.base.ExportService;
 import com.robam.rper.util.ClassUtil;
 import com.robam.rper.util.LogUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -21,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * desc   :
  * version: 1.0
  */
+@LocalService
 public class DisplayProvider implements ExportService {
 
     private static final String TAG = "DisplayProvider";
@@ -46,10 +57,17 @@ public class DisplayProvider implements ExportService {
 
     private AtomicBoolean startRefresh = new AtomicBoolean(false);
 
+    private volatile boolean pauseFlag = false;
+
 
     @Override
     public void onCreate(Context context) {
-//        this.allDisplayItems =
+        this.allDisplayItems = loadDisplayItem();
+        runningDisplay = new ConcurrentHashMap<>();
+        this.scheduExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.executorService = Executors.newCachedThreadPool();
+        this.cachedContent = new ConcurrentHashMap<>();
+
 
     }
 
@@ -59,11 +77,132 @@ public class DisplayProvider implements ExportService {
     }
 
     /**
+     * 获取显示项列表
+     * @return
+     */
+    public List<DisplayItemInfo> getAllDisplayItems(){
+        //按照名称排序
+        ArrayList<String> list = new ArrayList<>(allDisplayItems.keySet());
+        Collections.sort(list);
+        List<DisplayItemInfo> displayItems = new ArrayList<>(list.size()+1);
+        for (String key: list) {
+            displayItems.add(allDisplayItems.get(key));
+        }
+        return displayItems;
+    }
+
+    /**
+     * 获取正在运行列表
+     * @return
+     */
+    public Set<String> getRunningDisplayItems() {
+        // 按照名称排序
+        return runningDisplay.keySet();
+    }
+
+    /**
+     * 获取显示项列表
+     * @return
+     */
+    public String getDisplayContent(String name) {
+        return cachedContent.get(name);
+    }
+
+    /**
+     * 触发特定项
+     * @param name
+     * @return
+     */
+    public boolean triggerItem(String name){
+        DisplayWrapper wrapper = runningDisplay.get(name);
+        if (wrapper != null) {
+            wrapper.trigger();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private Runnable task = new Runnable() {
+        @Override
+        public void run() {
+            if (runningDisplay.size() == 0){
+                startRefresh.set(false);
+                return;
+            }
+            //定时500ms后执行
+            scheduExecutor.schedule(this, REFRESH_PERIOD, TimeUnit.MILLISECONDS);
+
+            //正在运行，或者暂停中，不进行操作
+            if (isRunning || pauseFlag){
+                return;
+            }
+
+        }
+    };
+
+    /**
+     * 开始录制
+     */
+    public void startRecording(){
+        pauseFlag = true;
+        for (DisplayWrapper wrapper : runningDisplay.values()){
+            wrapper.startRecord();
+        }
+        this.currentMode = RECORDING_MODE;
+        pauseFlag = false;
+    }
+
+    /**
+     * 停止录制
+     * @return
+     */
+
+    public Map<RecordPattern, List<RecordPattern.RecordItem>> stopRecording(){
+        pauseFlag = true;
+        this.currentMode = DISPLAY_MODE;
+        //强制停止
+        executorService.shutdownNow();
+        Map<RecordPattern, List<RecordPattern.RecordItem>> result = new HashMap<>();
+        for (DisplayWrapper wrapper : runningDisplay.values()){
+            result.putAll(wrapper.stopRecord());
+        }
+        executorService = Executors.newCachedThreadPool();
+        HashMap<String,String> map = new HashMap<>();
+        map.keySet();
+
+        pauseFlag = false;
+        return result;
+    }
+
+
+    /**
      * 加载所有显示项
      * @return
      */
     private Map<String, DisplayItemInfo> loadDisplayItem(){
-        //List<Class<? extends Displayable>> allDisplayable = ClassUtil.findSubClass();
+        List<Class<? extends Displayable>> allDisplayable = ClassUtil.findSubClass(Displayable.class, DisplayItem.class);
+        if (allDisplayable != null && allDisplayable.size() > 0){
+            Map<String, DisplayItemInfo> infoMap = new HashMap<>(allDisplayable.size()+1);
+            //加载类信息
+            for (Class<? extends Displayable> clazz : allDisplayable){
+                DisplayItem annotation = clazz.getAnnotation(DisplayItem.class);
+                if (annotation != null){
+                    DisplayItemInfo info = new DisplayItemInfo(annotation, clazz);
+                    DisplayItemInfo origin = infoMap.get(info.getName());
+                    if (origin == null){
+                        infoMap.put(info.getName(), info);
+                    }else {
+                        if (origin.level < info.level){
+                            infoMap.put(info.getName(), info);
+                        }
+                    }
+
+                }
+            }
+            return infoMap;
+        }
+
         return null;
     }
 
