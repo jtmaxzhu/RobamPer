@@ -1,12 +1,14 @@
 package com.robam.rper.display;
 
 import android.content.Context;
+import android.view.Display;
 
 
 import com.robam.rper.annotation.LocalService;
 import com.robam.rper.display.items.base.DisplayItem;
 import com.robam.rper.display.items.base.Displayable;
 import com.robam.rper.display.items.base.RecordPattern;
+import com.robam.rper.injector.param.Subscriber;
 import com.robam.rper.service.base.ExportService;
 import com.robam.rper.util.ClassUtil;
 import com.robam.rper.util.LogUtil;
@@ -123,6 +125,7 @@ public class DisplayProvider implements ExportService {
         }
     }
 
+    /** 定时刷新启动器 */
     private Runnable task = new Runnable() {
         @Override
         public void run() {
@@ -137,9 +140,83 @@ public class DisplayProvider implements ExportService {
             if (isRunning || pauseFlag){
                 return;
             }
-
+            isRunning = true;
+            for (Map.Entry<String, DisplayWrapper> entry : runningDisplay.entrySet()){
+                DisplayWrapper wrapper = entry.getValue();
+                if (wrapper.isRunning){
+                    continue;
+                }
+                if (executorService != null && !executorService.isShutdown()){
+                    executorService.execute(getDisplayRunnable(entry.getKey()));
+                }
+            }
+            isRunning = false;
         }
     };
+
+
+    /***
+     * 获取任务执行器
+     * @param name 小工具名称
+     * @return 执行器
+     */
+    private Runnable getDisplayRunnable(final String name){
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (pauseFlag){
+                    return;
+                }
+                DisplayWrapper wrapper = runningDisplay.get(name);
+                if (wrapper == null){
+                    return;
+                }
+                switch (currentMode){
+                    case DISPLAY_MODE:
+                        cachedContent.put(name, wrapper.getContent());
+                        break;
+                    case RECORDING_MODE:
+                        // 录制模式，通知显示工具记录数据
+                        wrapper.record();
+                        break;
+                }
+            }
+        };
+    }
+
+
+    /**
+     * 通过工具类与参数反射生成显示工具并配置参数
+     * 工具类需事先 {@link Displayable} 接口，并对需要注入的依赖实现public的设置方法，并在相关方法使用{@link Subscriber}注解
+     *
+     * @param name 工具类名称
+     * @return 显示名称与显示工具
+     */
+    public boolean startDisplay(String name){
+        DisplayItemInfo displayItemInfo = allDisplayItems.get(name);
+        if (displayItemInfo == null){
+            //加载空信息
+            return false;
+        }
+        if (runningDisplay.containsKey(name)){
+            //显示项正在运行不需要启动
+            return true;
+        }
+
+        Displayable displayable = null;
+        try{
+
+        }catch ()
+        displayable = ClassUtil.constructClass(displayItemInfo.getTargetClass());
+        displayable.start();
+        DisplayWrapper wrapper = new DisplayWrapper(displayable);
+        runningDisplay.put(name, wrapper);
+        if (!startRefresh.getAndSet(true)){
+            scheduExecutor.schedule(task, 500, TimeUnit.MILLISECONDS);
+        }
+        return true;
+    }
+
 
     /**
      * 开始录制
@@ -168,9 +245,6 @@ public class DisplayProvider implements ExportService {
             result.putAll(wrapper.stopRecord());
         }
         executorService = Executors.newCachedThreadPool();
-        HashMap<String,String> map = new HashMap<>();
-        map.keySet();
-
         pauseFlag = false;
         return result;
     }
