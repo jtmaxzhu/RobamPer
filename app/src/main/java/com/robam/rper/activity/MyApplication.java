@@ -75,6 +75,10 @@ public class MyApplication extends Application {
     private final static String TAG = MyApplication.class.getSimpleName();
     private static volatile boolean appInt = false;
 
+    public static final String SHOW_LOADING_DIALOG = "showLoadingDialog";
+    public static final String DISMISS_LOADING_DIALOG = "dismissLoadingDialog";
+
+
     protected static MyApplication appInstance;
     private Handler handler;
     protected Map<String, ServiceReference> registeredService = new HashMap<>();

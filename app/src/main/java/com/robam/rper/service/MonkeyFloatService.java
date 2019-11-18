@@ -152,9 +152,6 @@ public class MonkeyFloatService extends BaseService {
             }
         });
 
-
-
-
     }
 
     /**

@@ -205,18 +205,44 @@ public class DisplayProvider implements ExportService {
 
         Displayable displayable = null;
         try{
-
-        }catch ()
-        displayable = ClassUtil.constructClass(displayItemInfo.getTargetClass());
-        displayable.start();
-        DisplayWrapper wrapper = new DisplayWrapper(displayable);
-        runningDisplay.put(name, wrapper);
-        if (!startRefresh.getAndSet(true)){
-            scheduExecutor.schedule(task, 500, TimeUnit.MILLISECONDS);
+            displayable = ClassUtil.constructClass(displayItemInfo.getTargetClass());
+            displayable.start();
+            DisplayWrapper wrapper = new DisplayWrapper(displayable);
+            runningDisplay.put(name, wrapper);
+            if (!startRefresh.getAndSet(true)){
+                scheduExecutor.schedule(task, 500, TimeUnit.MILLISECONDS);
+            }
+            return true;
+        }catch (Exception e){
+            if (displayable != null) {
+                displayable.stop();
+            }
+            LogUtil.e(TAG, "构造显示项抛出异常", e);
         }
-        return true;
+        return false;
     }
 
+    /**
+     * 停止特定项
+     * @param name
+     */
+    public void stopDisplay(String name){
+        DisplayWrapper info = runningDisplay.remove(name);
+        if (info != null){
+            info.reference.stop();
+        }
+    }
+
+    /**
+     * 停止所有显示项
+     */
+    public void stopAllDisplay(){
+        for (String name:runningDisplay.keySet()){
+            DisplayWrapper wrapper = runningDisplay.get(name);
+            wrapper.reference.stop();
+        }
+        runningDisplay.clear();
+    }
 
     /**
      * 开始录制

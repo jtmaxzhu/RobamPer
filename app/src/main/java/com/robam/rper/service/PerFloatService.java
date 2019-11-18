@@ -256,7 +256,7 @@ public class PerFloatService extends BaseService {
      * @return
      */
     @Override
-    
+
     public IBinder onBind(Intent intent) {
         return null;
     }

@@ -38,8 +38,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <service
+            android:name=".serviceTest.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
 
-
+        <activity android:name=".activity.ServiceActivity" />
 
         <service
             android:name=".service.MonkeyFloatService"
