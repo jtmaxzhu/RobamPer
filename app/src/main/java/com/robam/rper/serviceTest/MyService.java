@@ -21,8 +21,8 @@ import static com.liulishuo.filedownloader.util.DownloadServiceNotConnectedHelpe
 public class MyService extends Service {
     private static final String TAG = "MyService";
     private static Notification notification;
-    private DownloadBinder mBinder = new DownloadBinder();
-    public class DownloadBinder extends Binder{
+    private DownloadBinder1 mBinder = new DownloadBinder1();
+    public class DownloadBinder1 extends Binder{
         public void startDownload(){
             LogUtil.d(TAG,"startDownload executed");
         }
@@ -54,7 +54,7 @@ public class MyService extends Service {
                     .setContentTitle("通知")
                     .setContentText("服务以及启动")
                     .setContentIntent(pi)
-                    .setSmallIcon(R.mipmap.ic_launcher).build();
+                    .setSmallIcon(R.mipmap.ic_launcher).setAutoCancel(true).build();
         }else{
             notification = new NotificationCompat.Builder(this)
                     .setContentTitle("这是通知标题")
@@ -62,7 +62,7 @@ public class MyService extends Service {
                     .setWhen(System.currentTimeMillis())
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                    .setContentIntent(pi).build();
+                    .setContentIntent(pi).setAutoCancel(true).build();
         }
 
         startForeground(1, notification);
