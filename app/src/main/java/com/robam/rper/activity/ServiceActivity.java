@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.robam.rper.R;
 import com.robam.rper.annotation.EntryActivity;
+import com.robam.rper.serviceTest.DownloadService;
 import com.robam.rper.serviceTest.MyService;
 
 import static com.liulishuo.filedownloader.util.DownloadServiceNotConnectedHelper.startForeground;
@@ -42,13 +43,15 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
-    private MyService.DownloadBinder downloadBinder;
+//    private MyService.DownloadBinder1 downloadBinder1;
+    private DownloadService.DownloadBinder downloadBinder;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            downloadBinder = (MyService.DownloadBinder)iBinder;
-            downloadBinder.startDownload();
-            downloadBinder.getProgress();
+         /* downloadBinder1 = (MyService.DownloadBinder1)iBinder;
+            downloadBinder1.startDownload();
+            downloadBinder1.getProgress();*/
+            downloadBinder = (DownloadService.DownloadBinder) iBinder;
         }
 
         @Override
@@ -56,6 +59,12 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
 
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +76,21 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
         Button stopService = findViewById(R.id.stop_service);
         Button bind_service = findViewById(R.id.bind_service);
         Button unbind_service = findViewById(R.id.unbind_service);
+        Button start_download = findViewById(R.id.start_download);
+        Button pause_download = findViewById(R.id.pause_download);
+        Button cancel_download = findViewById(R.id.cancel_download);
         changText.setOnClickListener(this);
         startService.setOnClickListener(this);
         stopService.setOnClickListener(this);
         unbind_service.setOnClickListener(this);
         bind_service.setOnClickListener(this);
+        start_download.setOnClickListener(this);
+        pause_download.setOnClickListener(this);
+        cancel_download.setOnClickListener(this);
+        Intent intent = new Intent(this, DownloadService.class);
+        startService(intent);
+        bindService(intent,connection,BIND_AUTO_CREATE);
+
 
 
     }
@@ -98,12 +117,21 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
                 stopService(stopIntent);
                 break;
             case R.id.unbind_service:
-                Intent unbindIntent = new Intent(this, MyService.class);
                 unbindService(connection);
                 break;
             case R.id.bind_service:
                 Intent bindIntent = new Intent(this, MyService.class);
                 bindService(bindIntent, connection, BIND_AUTO_CREATE);//绑定服务
+                break;
+            case R.id.start_download:
+                String url = "https://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe";
+                downloadBinder.startDownload(url);
+                break;
+            case R.id.pause_download:
+                downloadBinder.pauseDownload();
+                break;
+            case R.id.cancel_download:
+                downloadBinder.cancelDownload();
                 break;
             default:
                 break;

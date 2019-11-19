@@ -42,6 +42,27 @@
         android:layout_margin="5dp"
         android:text="unbind_service" />
 
+    <Button
+        android:id="@+id/start_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Start Download" />
+
+    <Button
+        android:id="@+id/pause_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Pause Download" />
+
+    <Button
+        android:id="@+id/cancel_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Cancel Download" />
+
 
     <TextView
         android:id="@+id/Mytext"
