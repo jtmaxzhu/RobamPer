@@ -1,13 +1,17 @@
 package com.robam.rper.service;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.rper.R;
+import com.robam.rper.activity.IndexActivity;
 import com.robam.rper.activity.MyApplication;
 import com.robam.rper.annotation.Param;
 import com.robam.rper.injector.InjectorService;
@@ -32,6 +37,7 @@ import com.robam.rper.service.base.BaseService;
 import com.robam.rper.tools.AppInfoProvider;
 import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.tools.CmdTools;
+import com.robam.rper.util.AppUtil;
 import com.robam.rper.util.ContextUtil;
 import com.robam.rper.util.LogUtil;
 import com.robam.rper.util.StringUtil;
@@ -39,6 +45,7 @@ import com.robam.rper.util.StringUtil;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,6 +53,12 @@ import static android.view.Surface.ROTATION_0;
 
 public class PerFloatService extends BaseService {
 
+
+    private static final int UPDATE_RECORD_TIME = 103;
+    private static final String TAG = "FloatWinService";
+
+    public static final int RECORDING_ICON = R.drawable.recording;
+    public static final int PLAY_ICON = R.drawable.start;
     //views
     List<WeakReference<View>> displayedViews = null;
 
@@ -216,7 +229,7 @@ public class PerFloatService extends BaseService {
         screenDisplay.getSize(size);
         x = size.x;
         y = (size.y / 2) - 4*statusBarHeight;
-        updateViewPosiyion();
+        updateViewPosition();
         backgroundIcon.setVisibility(View.VISIBLE);
         backgroundIcon.setAlpha(0.5F);
     }
@@ -224,7 +237,7 @@ public class PerFloatService extends BaseService {
     /**
      * 更新界面位置
      */
-    private void updateViewPosiyion(){
+    private void updateViewPosition(){
         //更新浮动窗口位置
         wmParams.x = (int)(x - mTouchStartX);
         wmParams.y = (int)(y - mTouchStartY);
@@ -232,9 +245,216 @@ public class PerFloatService extends BaseService {
         wm.updateViewLayout(view, wmParams);
     }
 
+    private void createView(){
+        view = LayoutInflater.from(this).inflate(R.layout.float_per, null);
+        //关闭按钮
+        close = view.findViewById(R.id.closeIcon);
+        //数据采集按钮
+        record = view.findViewById(R.id.recordIcon);
+        //录制文字
+        recordTime = view.findViewById(R.id.recordText);
+        recordTime.setVisibility(View.GONE);
+        appText =  view.findViewById(R.id.float_title_app);
+        appText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    PackageInfo pkgInfo = getPackageManager().getPackageInfo(appPackage,0);
+                    if (pkgInfo == null){
+                        return;
+                    }
+                    AppUtil.startApp(pkgInfo.packageName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        titlePanal = (LinearLayout) view.findViewById(R.id.float_title);
+
+        //主窗体
+        floatDisplayWrapper = view.findViewById(R.id.float_display_wrapper);
+        floatDisplay = view.findViewById(R.id.float_display_view);
+        floatDisplayWrapper.setVisibility(View.GONE);
+
+        //额外窗体
+        extraView = view.findViewById(R.id.float_extra_layout);
+        extraButton = view.findViewById(R.id.float_expand_layout);
+        extraView.setVisibility(View.GONE);
+        extraButton.setVisibility(View.GONE);
+
+        final ImageView expandButton = view.findViewById(R.id.float_expand_icon);
+        extraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (expandButton.getRotation() % 360 == 0){
+                    extraView.setVisibility(View.VISIBLE);
+                }else{
+                    extraView.setVisibility(View.GONE);
+                }
+                expandButton.setRotation(expandButton.getRotation() + 180);
+            }
+        });
+
+        //悬浮卡图标
+        cardIcon = view.findViewById(R.id.float_card_icon);
+        backgroundIcon = view.findViewById(R.id.floatIcon);
+        backgroundIcon.setVisibility(View.GONE);
+        cardView = view.findViewById(R.id.float_card);
+
+        //获取标题栏高度
+        if(statusBarHeight == 0){
+            try {
+                Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+                Object object = clazz.newInstance();
+                statusBarHeight = Integer.parseInt(clazz.getField("status_bar_height").get(object).toString());
+                statusBarHeight = getResources().getDimensionPixelSize(statusBarHeight);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                if (statusBarHeight == 0){
+                    statusBarHeight = 50;
+                }
+            }
+        }
+        //获得windowManager
+        wm = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        wmParams = ((MyApplication)getApplication()).getFloatWinParams();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            // 注意TYPE_SYSTEM_ALERT从Android8.0开始被舍弃了
+            wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        } else {
+            // 从Android8.0开始悬浮窗要使用TYPE_APPLICATION_OVERLAY
+            wmParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+        wmParams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;//这个窗口不会得到键输入焦点用户不能发送键或其他按钮事件给它
+        wmParams.gravity = Gravity.LEFT | Gravity.TOP;//悬浮窗左上角
+        //屏幕左上角为原点，设置初始值
+        wmParams.x = 0;
+        wmParams.y = 0;
+        //设置悬浮窗长宽
+        wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        wmParams.format = 1;
+        wmParams.alpha = 1F;
+
+        displayedViews = new ArrayList<>();
+        wm.addView(view, wmParams);
+        view.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //获取相对屏幕坐标,以屏幕左上角为原点
+                x = event.getRawX();
+                y = event.getRawY() - statusBarHeight;
+                LogUtil.i(TAG, "currX" + x + "====currY" + y);
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        state = MotionEvent.ACTION_DOWN;
+                        StartX = x;
+                        StartY = y;
+                        //相对view的坐标，view左上角为原点
+                        mTouchStartX = event.getX();
+                        mTouchStartY = event.getY();
+                        LogUtil.i(TAG, "startX" + mTouchStartX + "====startY" + mTouchStartY);
+                        lastState = state;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        state = MotionEvent.ACTION_MOVE;
+                        updateViewPosition();
+                        lastState = state;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        state = MotionEvent.ACTION_UP;
+                        updateViewPosition();
+                        //缩小状态下点击移动小于10，10 恢复成原始状态
+                        if (Math.abs(x-StartX)<10 && Math.abs(y-StartY)<10 && backgroundIcon.getVisibility() == View.GONE){
+                            //如果注册悬浮窗监听器
+                            if (floatListener != null){
+                                floatListener.onFloatClick(false);
+                            }else {
+                                cardView.setVisibility(View.VISIBLE);
+                                backgroundIcon.setVisibility(View.GONE);
+                            }
+                        }
+                        mTouchStartY = mTouchStartX = 0;
+                        lastState = state;
+                        break;
+                }
+                return false;
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stopListener != null){
+                    boolean result = stopListener.onStopClick();
+                    if (!result){
+                        return;
+                    }
+                }
+                PerFloatService.this.stopSelf();
+            }
+        });
+
+        ImageView homeButton = view.findViewById(R.id.homeIcon);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * 服务使用startActivity直接启动activity可能会比较慢，GooGle这样设计避免用户毫不知情的情况下突然中断用户的操作
+                 * 这里使用PendingIntent启动
+                 */
+                Intent intent = new Intent(PerFloatService.this, IndexActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(PerFloatService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                try{
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                    LogUtil.e(TAG, "PendingIntent canceled ", e);
+                }
+            }
+        });
+
+        //悬浮卡点击图标变缩小状态
+        cardIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (floatListener != null){
+                    floatListener.onFloatClick(true);
+                }else {
+                    cardView.setVisibility(View.GONE);
+                    backgroundIcon.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        //录制
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (runListener != null){
+                    int result = runListener.onRunClick();
+                    if (result != 0){
+                        record.setImageResource(result);
+                        if (result == RECORDING_ICON){
+                            recordCount = 0;
+                            isCountTime = true;
+                            recordTime.setVisibility(View.VISIBLE);
+                            handler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME,1000);
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     public interface OnRunListener{
@@ -259,5 +479,43 @@ public class PerFloatService extends BaseService {
 
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+
+    private static final class TimeProcessHandler extends Handler{
+        private WeakReference<PerFloatService> serviceRef;
+
+        public TimeProcessHandler(PerFloatService service) {
+            this.serviceRef = new WeakReference<>(service);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            PerFloatService service = serviceRef.get();
+            if (service == null){
+                return;
+            }
+            switch (msg.what){
+                case UPDATE_RECORD_TIME:
+                    //每秒增加recordCount，作为已录制的时间
+                    service.recordCount++;
+                    service.recordTime.setText(timefyCount(service.recordCount));
+                    if (service.isCountTime){
+                        sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
+                    }
+                    break;
+            }
+
+            super.handleMessage(msg);
+        }
+
+        /**
+         * 将秒数转化为xx:xx格式
+         * @param count 秒数
+         * @return 转化后的字符串
+         */
+        private static String timefyCount(int count) {
+            return String.format(Locale.CHINA, "%02d:%02d", count / 60, count % 60);
+        }
     }
 }
