@@ -236,7 +236,7 @@ public class MonkeyActivity extends BaseActivity {
 
     private void getNotification() {
         String id = "channel_001";
-        String name = "name";
+        String name = "RobamPer";
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         Notification notification = null;
         Intent intent = new Intent(this, MonkeyActivity.class);

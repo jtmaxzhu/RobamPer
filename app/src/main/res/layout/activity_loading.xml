@@ -54,6 +54,14 @@
             android:layout_marginLeft="8dp"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:max="100"
+                android:padding="10dp"
+                android:id="@+id/loadProgress"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

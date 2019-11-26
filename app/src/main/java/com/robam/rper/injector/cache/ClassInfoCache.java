@@ -100,14 +100,14 @@ public class ClassInfoCache {
             return null;
         }
 
-        // 初始化
+        // 初始化。创建一个list，大小是provider.value返回的数组长度+1
         List<InjectParam> realTypes = new ArrayList<>(provider.value().length + 1);
 
         Class<?> realParam = null;
         if (method != null) {
-            Class<?> defineParam = method.getReturnType();
-            if (defineParam.isPrimitive()) {
-                defineParam = Const.getPackedType(defineParam);
+            Class<?> defineParam = method.getReturnType();//得到返回值的类型
+            if (defineParam.isPrimitive()) {//判断返回值是否是原始类型
+                defineParam = Const.getPackedType(defineParam);//原始类型转换为对应的包装类
             }
 
             // 空返回值的方法，无法Provide
@@ -116,7 +116,7 @@ public class ClassInfoCache {
             }
 
             // 如果返回的是List或Map，无法解析具体的类
-            if (!Map.class.isAssignableFrom(defineParam)) {
+            if (!(Map.class.isAssignableFrom(defineParam) || List.class.isAssignableFrom(defineParam))) {
                 realParam = defineParam;
             }
         }

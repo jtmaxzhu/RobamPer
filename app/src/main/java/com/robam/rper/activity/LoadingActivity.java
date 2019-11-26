@@ -5,27 +5,38 @@ import android.os.Build;
 import android.os.Bundle;
 import android.Manifest;
 import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.robam.rper.R;
 import com.robam.rper.service.SPService;
 import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.util.FileUtils;
+import com.robam.rper.util.LogUtil;
 import com.robam.rper.util.MiscUtil;
 import com.robam.rper.util.PermissionUtil;
 import com.robam.rper.util.StringUtil;
 
+import org.w3c.dom.ls.LSOutput;
+
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 
 public class LoadingActivity extends BaseActivity {
     private static final String TAG = LoadingActivity.class.getSimpleName();
     private static volatile boolean appInt = false;
+    private  ProgressBar progressBar;
+    private  Handler mhandler = new TimeProcessBarHandler(this);
+    private  int mProgress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-        //sd卡新建monkey日志存放文件夹
+        progressBar = findViewById(R.id.loadProgress);
     }
 
     /**
@@ -34,6 +45,7 @@ public class LoadingActivity extends BaseActivity {
     private void afterWritePermission() {
         FileUtils.getRperDir();
         // 已经初始化完毕过了，直接进入主页
+        LogUtil.d("liuxh11","------"+MyApplication.getInstance().hasFinishInit());
         if (MyApplication.getInstance().hasFinishInit()) {
             //启动页面延时1.5s
             new Handler().postDelayed(new Runnable() {
@@ -43,11 +55,21 @@ public class LoadingActivity extends BaseActivity {
                     startActivity(intent);
                     finish();
                 }
-            }, 2000);
+            }, 10);
         } else {
             // 新启动进闪屏页2s
             waitForAppInitialize();
         }
+    }
+
+    private int doWork(){
+        mProgress += Math.random()*10;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mProgress;
     }
 
     /**
@@ -57,8 +79,21 @@ public class LoadingActivity extends BaseActivity {
       BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                while (!MyApplication.getInstance().hasFinishInit()) {
+               /* while (!MyApplication.getInstance().hasFinishInit()) {
                     MiscUtil.sleep(2000);
+                }*/
+                while (true) {
+                    mProgress = doWork();
+                    Message ms = new Message();
+
+                    if (mProgress < 100) {
+                        ms.what = 0x1;
+                        mhandler.sendMessage(ms);
+                    } else {
+                        ms.what = 0x0;
+                        mhandler.sendMessage(ms);
+                        break;
+                    }
                 }
 
                 // 主线程跳转下
@@ -112,6 +147,32 @@ public class LoadingActivity extends BaseActivity {
 
         }else{
             afterWritePermission();
+        }
+    }
+
+    private static final class TimeProcessBarHandler extends Handler{
+        private WeakReference<LoadingActivity> activityRef;
+
+        public TimeProcessBarHandler(LoadingActivity activityRef) {
+            this.activityRef = new WeakReference<>(activityRef);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            LoadingActivity activity = activityRef.get();
+            if (activity == null){
+                return;
+            }
+            switch (msg.what){
+                case 0x1:
+                    activity.progressBar.setProgress(activity.mProgress);
+                    break;
+                case 0x0:
+                    activity.progressBar.setVisibility(View.GONE);
+                    break;
+            }
+
         }
     }
 

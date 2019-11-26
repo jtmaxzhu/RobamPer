@@ -14,10 +14,14 @@ import android.support.v4.app.NotificationCompat;
 
 import com.robam.rper.R;
 import com.robam.rper.activity.ServiceActivity;
+import com.robam.rper.annotation.Param;
+import com.robam.rper.annotation.Provider;
 import com.robam.rper.util.LogUtil;
 
 import static com.liulishuo.filedownloader.util.DownloadServiceNotConnectedHelper.startForeground;
 
+
+@Provider(@Param(value = "MyService"))
 public class MyService extends Service {
     private static final String TAG = "MyService";
     private static Notification notification;
@@ -62,10 +66,12 @@ public class MyService extends Service {
                     .setWhen(System.currentTimeMillis())
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                    .setContentIntent(pi).setAutoCancel(true).build();
+                    .setAutoCancel(true).build();
         }
 
         startForeground(1, notification);
+
+
 
     }
 

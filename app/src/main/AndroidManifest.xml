@@ -56,12 +56,14 @@
             android:exported="true" />
 
         <activity android:name=".activity.MonkeyActivity" />
+        <activity android:name=".activity.ProgressBarActivity" />
         <activity android:name=".activity.RuntimePermissionActivity" />
         <activity android:name=".activity.AdbSettingActivity" />
         <activity android:name=".activity.BroadcastActivity" />
         <activity android:name=".activity.ListViewActivity" />
         <activity android:name=".activity.PerformanceActivity" />
-        <activity android:name=".activity.IndexActivity" />
+        <activity android:name=".activity.IndexActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".activity.ListMyActivity" />
         <activity
             android:name=".activity.PermissionDialogActivity"

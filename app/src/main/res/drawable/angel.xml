@@ -13,9 +13,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="2px"
-    android:background="@color/divider_color1">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="20dp"
+        android:height="12dp"
+        android:viewportWidth="20"
+        android:viewportHeight="12"
+    >
+    <group
+        android:pivotX="10"
+        android:pivotY="10"
+        android:rotation="90">
 
-</LinearLayout>
+    <path
+        android:fillColor="#FFCCCCCC"
+        android:pathData="M1.5,0L11.5,10L1.5,20L0,18.5L8.5,10L0,1.5"/>
+    </group>
+</vector>

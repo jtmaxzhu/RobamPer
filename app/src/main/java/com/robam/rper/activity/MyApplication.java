@@ -33,6 +33,7 @@ import com.robam.rper.logger.DiskLogStrategy;
 import com.robam.rper.logger.SimpleFormatStrategy;
 import com.robam.rper.service.SPService;
 import com.robam.rper.service.base.ExportService;
+import com.robam.rper.serviceTest.testdemo;
 import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.util.ClassUtil;
 import com.robam.rper.util.FileUtils;
@@ -299,9 +300,6 @@ public class MyApplication extends Application {
                 }
 
                 ServiceReference reference = new ServiceReference(anno, childClass);
-//                LogUtil.d(TAG,"注解的名称："+name);
-//                LogUtil.d(TAG,"引用的名称："+reference);
-//                LogUtil.d(TAG,"_registerServices-----------------------------：");
                 registeredService.put(name, reference);
 
             }
@@ -314,7 +312,7 @@ public class MyApplication extends Application {
     public void init(){
         //注册自身信息
         injectorService = findServiceByName(InjectorService.class.getName());
-        injectorService.register(this);
+        //injectorService.register(this);
         //文件下载和crash日志存储
         initLibraries();
 
@@ -330,6 +328,8 @@ public class MyApplication extends Application {
 
         Timer timer = new Timer("AUTO_CLEAR_FILE");
         timer.schedule(CLEAR_FILES_TASK, 5*1000, 3 * 60 * 60 * 1000);
+        testdemo ts = new testdemo();
+        ts.testdemoPro();
     }
 
 
