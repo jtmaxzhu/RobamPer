@@ -63,11 +63,25 @@ public class ProgressBarActivity extends BaseActivity  {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        View view = LayoutInflater.from(this).inflate(R.layout.activity_progressbar,null);
+        //View view = LayoutInflater.from(this).inflate(R.id.ProgressLayout,null);
+        View view = findViewById(R.id.ProgressLayout);
         Rect rect = new Rect();
         view.getDrawingRect(rect);
+        int[] location = new int[2];
+        view.getLocationInWindow(location);
+        int x = location[0]; // view距离window 左边的距离（即x轴方向）
+        int y = location[1]; // view距离window 顶边的距离（即y轴方向）
+
+        LogUtil.d("ProgressBarActivity","x:"+x);
+        LogUtil.d("ProgressBarActivity","y:"+y);
+
         LogUtil.d("ProgressBarActivity","rect.width()"+rect.width());
         LogUtil.d("ProgressBarActivity","rect.height()"+rect.height());
+        LogUtil.d("ProgressBarActivity","view.getLeft()"+ view.getLeft());
+        LogUtil.d("ProgressBarActivity","view.getTop()"+view.getTop());
+        LogUtil.d("ProgressBarActivity","view.getRight()"+view.getRight());
+        LogUtil.d("ProgressBarActivity","view.getBottom()"+view.getBottom());
+
 
     }
 
@@ -101,7 +115,7 @@ public class ProgressBarActivity extends BaseActivity  {
                     LogUtil.d("liuxh11","activity.mProgress："+activity.mProgress);
                     break;
                 case 0x0:
-                    activity.progressBar.setVisibility(View.GONE);
+                    //activity.progressBar.setVisibility(View.GONE);
                     break;
             }
 

@@ -9,21 +9,27 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:background="@color/colorBtnGreen"
+        android:padding="20dp">
+
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/ProgressLayout"
+            android:background="@color/red">
 
             <ProgressBar
+                android:id="@+id/loadProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:max="100"
-                android:padding="10dp"
-                android:id="@+id/loadProgressBar"/>
+                android:padding="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,6 +38,30 @@
                 android:textColor="@color/textColorMidGray"
                 android:textSize="12dp" />
         </LinearLayout>
+
+      <!--  <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical"
+            android:background="@color/yellow">
+
+            <ProgressBar
+                android:id="@+id/loadProgressBar1"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:padding="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="©2019 ROBAMLAB.COM.CN ALL Rights Reserved"
+                android:textColor="@color/textColorMidGray"
+                android:textSize="12dp" />
+        </LinearLayout>-->
+
     </LinearLayout>
 
 </RelativeLayout>
