@@ -182,6 +182,7 @@ public class MonkeyFloatService extends BaseService {
 
     private void createView() {
         view = LayoutInflater.from(this).inflate(R.layout.float_monkey, null);
+
         // 关闭按钮
         close = (ImageView) view.findViewById(R.id.closeIcon);
         startAndstop = (ImageView) view.findViewById(R.id.recordIcon);

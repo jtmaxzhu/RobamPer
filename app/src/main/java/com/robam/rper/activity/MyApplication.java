@@ -507,6 +507,13 @@ public class MyApplication extends Application {
         return null;
     }
 
+    public void stopServiceByName(String name){
+        if (registeredService.containsKey(name)){
+            ServiceReference ref = registeredService.get(name);
+            ref.onDestroy(getContext());
+        }
+    }
+
     /**
      * 主线程等待函数
      * @return

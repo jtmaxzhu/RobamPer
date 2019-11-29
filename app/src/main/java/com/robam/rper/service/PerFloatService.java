@@ -265,6 +265,9 @@ public class PerFloatService extends BaseService {
 
     private void createView(){
         view = LayoutInflater.from(this).inflate(R.layout.float_per, null);
+
+
+
         //关闭按钮
         close = view.findViewById(R.id.closeIcon);
         //数据采集按钮
@@ -758,9 +761,28 @@ public class PerFloatService extends BaseService {
             }
             PerFloatService service = perFloatServiceRefer.get();
             Rect rect = new Rect();
-            return false;
 
+            service.view.getDrawingRect(rect);
 
+            // 通过当前LayoutParam进行判断
+            Rect r = new Rect();
+            service.view.getWindowVisibleDisplayFrame(r);
+            WindowManager.LayoutParams params = (WindowManager.LayoutParams) service.view.getLayoutParams();
+
+            int x = r.left + params.x;
+            int y = r.top + params.y;
+
+            // 对于超过边界的情况
+            if (x > r.right - rect.width()) {
+                x = r.right - rect.width();
+            }
+
+            if (y > r.bottom - rect.height()) {
+                y = r.bottom - rect.height();
+            }
+
+            LogUtil.d("FloatWinService", "悬浮窗坐标包含：%s, 目标x: %f, 目标y: %f", rect, point.x - service.x + rect.right, point.y - service.y - service.statusBarHeight);
+            return rect.contains(point.x - x, point.y - y);
         }
 
 
