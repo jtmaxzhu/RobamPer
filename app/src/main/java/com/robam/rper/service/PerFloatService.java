@@ -784,10 +784,6 @@ public class PerFloatService extends BaseService {
             LogUtil.d("FloatWinService", "悬浮窗坐标包含：%s, 目标x: %f, 目标y: %f", rect, point.x - service.x + rect.right, point.y - service.y - service.statusBarHeight);
             return rect.contains(point.x - x, point.y - y);
         }
-
-
-
-
     }
 
 

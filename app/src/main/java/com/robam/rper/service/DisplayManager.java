@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
@@ -17,9 +19,13 @@ import com.robam.rper.adapter.FloatWinAdapter;
 import com.robam.rper.display.DisplayItemInfo;
 import com.robam.rper.display.DisplayProvider;
 import com.robam.rper.display.items.base.RecordPattern;
+import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.ui.RecycleViewDivider;
+import com.robam.rper.util.ContextUtil;
 import com.robam.rper.util.LogUtil;
+import com.robam.rper.util.StringUtil;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +92,6 @@ public class DisplayManager {
         provider = MyApplication.getInstance().findServiceByName(DisplayProvider.class.getName());
         executorService = Executors.newSingleThreadScheduledExecutor();
         runListener = new MyRunningListener(this);
-
-
     }
 
 
@@ -118,8 +122,20 @@ public class DisplayManager {
     private void stopRecord(){
         this.runningMode = DisplayProvider.DISPLAY_MODE;
         final Map<RecordPattern, List<RecordPattern.RecordItem>> result = provider.stopRecording();
+        binder.provideDisplayView(provideMainView(binder.loadServiceContext()), new LinearLayout.LayoutParams(ContextUtil.dip2px(binder.loadServiceContext(), 280),
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        final String uploadUrl = SPService.getString(SPService.KEY_PERFORMANCE_UPLOAD, null);
+        BackgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (StringUtil.isEmpty(uploadUrl)){
+                    File folder;
 
 
+                }
+
+            }
+        });
 
     }
 
@@ -146,6 +162,10 @@ public class DisplayManager {
         floatWinList.setAdapter(floatWinAdapter);
         floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 1, context.getResources().getColor(R.color.divider_color)));
         return floatWinList;
+    }
+
+    private View provideExpendView(Context context) {
+        return null;
     }
 
 
@@ -176,13 +196,36 @@ public class DisplayManager {
             PerFloatService.PerFloatBinder binder = (PerFloatService.PerFloatBinder)service;
             DisplayManager manager = ref.get();
             Context context = binder.loadServiceContext();
+            manager.floatWinAdapter = new FloatWinAdapter(context, manager, manager.currentDisplayInfo);
+            //主界面
+            binder.provideDisplayView(manager.provideMainView(context), new LinearLayout.LayoutParams(ContextUtil.dip2px(context, 280),
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
 
-
-
+            //扩展界面
+            binder.provideExpendView(manager.provideExpendView(context), null);
+            manager.binder = binder;
+            binder.registerStopClickListener(manager.stopListener);
+            binder.registerRunClickListener(manager.runListener);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            if (ref.get() == null){
+                return;
+            }
+            //设置悬浮窗界面
+            PerFloatService.PerFloatBinder binder = ref.get().binder;
+            ref.get().binder = null;
+            //隐藏界面
+            binder.provideExpendView(null,null);
+            binder.provideDisplayView(null,null);
+            binder.registerRunClickListener(null);
+            binder.registerStopClickListener(null);
+
+            binder.stopFloat();
+
+
+
 
         }
     }
