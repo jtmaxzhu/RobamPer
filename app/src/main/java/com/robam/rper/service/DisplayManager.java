@@ -3,6 +3,7 @@ package com.robam.rper.service;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,10 +20,12 @@ import com.robam.rper.adapter.FloatWinAdapter;
 import com.robam.rper.display.DisplayItemInfo;
 import com.robam.rper.display.DisplayProvider;
 import com.robam.rper.display.items.base.RecordPattern;
+import com.robam.rper.injector.InjectorService;
 import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.ui.RecycleViewDivider;
 import com.robam.rper.util.ContextUtil;
 import com.robam.rper.util.LogUtil;
+import com.robam.rper.util.RecordUtil;
 import com.robam.rper.util.StringUtil;
 
 import java.io.File;
@@ -34,6 +37,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * author : liuxiaohu
@@ -63,6 +67,7 @@ public class DisplayManager {
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
 
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    private InjectorService injectorService;
 
     private DisplayProvider provider;
     private ScheduledExecutorService scheduledService;
@@ -95,7 +100,9 @@ public class DisplayManager {
     }
 
 
-
+    /**
+     * 停止数据显示
+     */
     private void stop(){
         runningFlag = false;
         //停止服务
@@ -105,7 +112,100 @@ public class DisplayManager {
             connection = null;
             binder = null;
         }
+
+        //发送停止显示消息，去掉已经勾选的选项
+        injectorService.pushMessage(STOP_DISPLAY, null, false);
+        //injectorService.unregister(this);
+        this.displayMessages.clear();
+        this.currentDisplayInfo.clear();
     }
+
+    /**
+     * 更新悬浮窗数据显示列表
+     * @param newItems
+     * @param removeItems
+     * @return
+     */
+
+    public synchronized List<DisplayItemInfo> updateRecordingItems(List<DisplayItemInfo> newItems, List<DisplayItemInfo> removeItems){
+        List<DisplayItemInfo> newInfos = new ArrayList<>(currentDisplayInfo);
+        if (removeItems != null && removeItems.size() > 0){
+            for (DisplayItemInfo remove : removeItems){
+                provider.stopDisplay(remove.getName());
+            }
+            newInfos.removeAll(removeItems);
+        }
+        //添加显示项
+        List<DisplayItemInfo> failed = new ArrayList<>();
+        if (newItems != null && newItems.size() > 0){
+            for (DisplayItemInfo info : newItems){
+                boolean result = provider.startDisplay(info.getName());
+                //如果失败，将失败项放入failed
+                if (result){
+                    newInfos.add(info);
+                }else {
+                    failed.add(info);
+                }
+            }
+
+        }
+        currentDisplayInfo = newInfos;
+        //绑定服务
+        if (connection == null && currentDisplayInfo.size() > 0){
+            start();
+        }else if (connection != null && currentDisplayInfo.size() == 0){
+            stop();
+        }
+        return failed;
+
+
+    }
+
+
+
+    /**
+     * 数据显示
+     */
+    private void start(){
+        connection = new DisplayConnection(this);
+        Context context = MyApplication.getInstance();
+        injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
+
+        runningFlag = true;
+        //绑定服务
+        context.bindService(new Intent(context, PerFloatService.class), connection, Context.BIND_AUTO_CREATE);
+        executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                if (runningFlag){
+                    executorService.schedule(this, 500, TimeUnit.MILLISECONDS);
+                }
+                updateDisplayInfo();
+            }
+        }, 500, TimeUnit.MILLISECONDS);
+
+    }
+
+    private void updateDisplayInfo(){
+        if (runningMode == DisplayProvider.DISPLAY_MODE){
+            displayMessages.clear();
+            for (DisplayItemInfo info : currentDisplayInfo){
+                displayMessages.add(provider.getDisplayContent(info.getName()));
+            }
+
+            MyApplication.getInstance().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    floatWinAdapter.updateListViewSource(currentDisplayInfo, displayMessages);
+                }
+            });
+        }
+    }
+
+
+
+
+
 
     /**
      * 开始录制
@@ -129,11 +229,15 @@ public class DisplayManager {
             @Override
             public void run() {
                 if (StringUtil.isEmpty(uploadUrl)){
-                    File folder;
-
-
+                    File folder = RecordUtil.saveToFile(result);
+                    //显示提示框
+                    MyApplication.getInstance().showDialog(binder.loadServiceContext(),"数据已经保存到\"" + folder.getPath() +"\"下",
+                            "确定", null);
+                }else {
+                    String response = RecordUtil.uploadData(uploadUrl, result);
+                    MyApplication.getInstance().showDialog(binder.loadServiceContext(), "录制数据已经上传至\"" + uploadUrl + "\"，" +
+                            "响应结果: " + response , "确定", null);
                 }
-
             }
         });
 
@@ -144,7 +248,6 @@ public class DisplayManager {
      * @param context
      * @return
      */
-
     @SuppressLint("ClickableViewAccessibility")
     private View provideMainView(Context context){
         if (runningMode == DisplayProvider.RECORDING_MODE){
@@ -221,12 +324,7 @@ public class DisplayManager {
             binder.provideDisplayView(null,null);
             binder.registerRunClickListener(null);
             binder.registerStopClickListener(null);
-
             binder.stopFloat();
-
-
-
-
         }
     }
 
@@ -246,7 +344,11 @@ public class DisplayManager {
             //更新显示图标
             DisplayManager manager = manRef.get();
             if (manager.runningMode == DisplayProvider.DISPLAY_MODE){
-
+                manager.startRecord();
+                return PerFloatService.RECORDING_ICON;
+            }else if (manager.runningMode == DisplayProvider.RECORDING_MODE){
+                manager.stopRecord();
+                return PerFloatService.PLAY_ICON;
             }
             return 0;
         }

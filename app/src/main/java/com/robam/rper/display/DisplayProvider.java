@@ -75,7 +75,20 @@ public class DisplayProvider implements ExportService {
 
     @Override
     public void onDestroy(Context context) {
-
+        for (String name : runningDisplay.keySet()){
+            DisplayWrapper wrapper = runningDisplay.get(name);
+            wrapper.reference.stop();
+        }
+        runningDisplay.clear();
+        runningDisplay = null;
+        if (this.scheduExecutor != null && !this.scheduExecutor.isShutdown()){
+            this.scheduExecutor.shutdown();
+        }
+        this.scheduExecutor = null;
+        if (this.executorService != null && !this.executorService.isShutdown()) {
+            this.executorService.shutdownNow();
+        }
+        this.executorService = null;
     }
 
     /**
