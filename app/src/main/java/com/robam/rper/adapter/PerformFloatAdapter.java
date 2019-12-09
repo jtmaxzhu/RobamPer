@@ -13,10 +13,13 @@ import android.widget.TextView;
 
 import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
+import com.robam.rper.annotation.Param;
 import com.robam.rper.annotation.Provider;
 import com.robam.rper.display.DisplayItemInfo;
 import com.robam.rper.display.DisplayProvider;
 import com.robam.rper.injector.InjectorService;
+import com.robam.rper.injector.param.RunningThread;
+import com.robam.rper.injector.param.Subscriber;
 import com.robam.rper.service.DisplayManager;
 import com.robam.rper.util.LogUtil;
 import com.robam.rper.util.PermissionUtil;
@@ -56,7 +59,7 @@ public class PerformFloatAdapter extends BaseAdapter {
     private void init() {
         mData = new ArrayList<>();
         displayManager = DisplayManager.getInstance();
-        provider = MyApplication.getInstance().findServiceByName(Provider.class.getName());
+        provider = MyApplication.getInstance().findServiceByName(DisplayProvider.class.getName());
         mData = provider.getAllDisplayItems();
 
         Set<String> runningItems = provider.getRunningDisplayItems();
@@ -109,10 +112,10 @@ public class PerformFloatAdapter extends BaseAdapter {
                             @Override
                             public void onPermissionResult(boolean result, String reason) {
                                 if (result){
-                                    List<DisplayItemInfo> item = new ArrayList<>();
-                                    item.add(mData.get(position));
+                                    List<DisplayItemInfo> addItem = new ArrayList<>();
+                                    addItem.add(mData.get(position));
                                     isSelected.put(position, true);
-                                    List<DisplayItemInfo> fail = displayManager.updateRecordingItems(item, null);
+                                    List<DisplayItemInfo> fail = displayManager.updateRecordingItems(addItem, null);
                                     if (fail != null && fail.size() > 0){
                                         for (DisplayItemInfo failed: fail) {
                                             LogUtil.d(TAG, "Open item %s failed", failed.getName());
@@ -125,14 +128,25 @@ public class PerformFloatAdapter extends BaseAdapter {
                             }
                         });
                     }else{
-
+                        List<DisplayItemInfo> removeItem = new ArrayList<>();
+                        removeItem.add(mData.get(position));
+                        isSelected.put(position, false);
+                        displayManager.updateRecordingItems(null, removeItem);
+                        ((CheckBox) v).setChecked(isSelected.get(position));
                     }
-
-
                 }
             });
+            viewHolder.tip = convertView.findViewById(R.id.tip);
+            convertView.setTag(viewHolder);
+        }else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        return null;
+        viewHolder.img.setImageResource(mData.get(position).getIcon());
+        viewHolder.title.setText(mData.get(position).getName());
+        viewHolder.tip.setText(mData.get(position).getTip());
+        viewHolder.cBox.setChecked(isSelected.get(position));
+        viewHolder.cBox.setTag(position);
+        return convertView;
     }
 
 
@@ -142,4 +156,12 @@ public class PerformFloatAdapter extends BaseAdapter {
         public TextView tip;
         public CheckBox cBox;
     }
+    @Subscriber(value = @Param(DisplayManager.STOP_DISPLAY), thread = RunningThread.MAIN_THREAD)
+    public void onDisplayStop() {
+        for (int i = 0; i < mData.size(); i++) {
+            isSelected.put(i, false);
+        }
+        notifyDataSetChanged();
+    }
+
 }

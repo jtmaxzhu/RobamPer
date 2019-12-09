@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
 import com.robam.rper.adapter.FloatWinAdapter;
+import com.robam.rper.annotation.Param;
+import com.robam.rper.annotation.Provider;
 import com.robam.rper.display.DisplayItemInfo;
 import com.robam.rper.display.DisplayProvider;
 import com.robam.rper.display.items.base.RecordPattern;
@@ -45,6 +47,7 @@ import java.util.concurrent.TimeUnit;
  * desc   :
  * version: 1.0
  */
+//@Provider(@Param(value = DisplayManager.STOP_DISPLAY))
 public class DisplayManager {
 
     private static final String TAG = "DisplayManager";
@@ -196,7 +199,8 @@ public class DisplayManager {
             MyApplication.getInstance().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    floatWinAdapter.updateListViewSource(currentDisplayInfo, displayMessages);
+                    LogUtil.d(TAG,"floatWinAdapter"+floatWinAdapter);
+                   // floatWinAdapter.updateListViewSource(currentDisplayInfo, displayMessages);
                 }
             });
         }

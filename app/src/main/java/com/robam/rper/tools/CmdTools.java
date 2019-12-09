@@ -419,7 +419,15 @@ public class CmdTools {
         return "";
     }
 
-
+    public static Process getRootCmd(){
+        try{
+            return Runtime.getRuntime().exec("su");
+        } catch (IOException e) {
+            LogUtil.e(TAG, "get root shell failed", e);
+            isRoot = false;
+        }
+        return null;
+    }
 
     private static Boolean isRoot = null;
     /**
@@ -449,6 +457,54 @@ public class CmdTools {
         return bool;
     }
 
+
+    public static StringBuilder execCmd(String cmd) {
+        InputStreamReader isr = null;
+        BufferedReader br = null;
+        Process p = null;
+        StringBuilder ret = new StringBuilder();
+        String line = "";
+
+        try {
+            p = Runtime.getRuntime().exec(cmd);// 经过Root处理的android系统即有su命令
+            isr = new InputStreamReader(p.getInputStream());
+
+            br = new BufferedReader(isr);
+            while ((line = br.readLine()) != null) {
+//            		LogUtil.d(TAG, "ERR************" + line);
+                ret.append(line).append("\n");
+            }
+            br.close();
+            p.waitFor();
+        } catch (Exception e) {
+            LogUtil.e(TAG, "抛出异常 " + e.getMessage(), e);
+            return ret;
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+
+                    LogUtil.e(TAG, "抛出异常 " + e.getMessage(), e);
+                }
+            }
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException e) {
+                    LogUtil.e(TAG, "抛出异常 " + e.getMessage(), e);
+                }
+            }
+            if(p != null) {
+                try {
+                    p.destroy();
+                } catch (Exception e) {
+                    LogUtil.e(TAG, "抛出异常 " + e.getMessage(), e);
+                }
+            }
+        }
+        return ret;
+    }
 
     /**
      * 执行root命令

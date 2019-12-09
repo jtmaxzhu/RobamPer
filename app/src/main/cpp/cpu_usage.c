@@ -52,7 +52,7 @@ static long long previousIdle = 0;
  * Method:    getTotalUsage
  * Signature: ()F
  */
-jfloat Java_com_alipay_hulu_shared_display_items_CPUTools_getTotalUsage(JNIEnv* env, jclass clz) {
+jfloat Java_com_robam_rper_display_items_CPUTools_getTotalUsage(JNIEnv* env, jclass clz) {
     FILE * pFile;
     char* filename = "/proc/stat";
 
@@ -115,7 +115,7 @@ static int count = 0;
  * Signature: (I)[F
  */
 jfloatArray
-Java_com_alipay_hulu_shared_display_items_CPUTools_getAppTotalUsage(JNIEnv *env, jclass clz, jintArray pids) {
+Java_com_robam_rper_display_items_CPUTools_getAppTotalUsage(JNIEnv *env, jclass clz, jintArray pids) {
 
     jboolean b;
     jint *realPids = (*env)->GetIntArrayElements(env, pids, &b);

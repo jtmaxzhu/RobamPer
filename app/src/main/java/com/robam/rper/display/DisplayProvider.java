@@ -97,6 +97,7 @@ public class DisplayProvider implements ExportService {
      */
     public List<DisplayItemInfo> getAllDisplayItems(){
         //按照名称排序
+        allDisplayItems.keySet();
         ArrayList<String> list = new ArrayList<>(allDisplayItems.keySet());
         Collections.sort(list);
         List<DisplayItemInfo> displayItems = new ArrayList<>(list.size()+1);

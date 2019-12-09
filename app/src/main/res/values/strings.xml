@@ -15,4 +15,5 @@
     <string name="adb_open_advice">如有ADB连接电脑提示弹窗，请点击允许</string>
     <string name="open_adb_permission_failed">开启ADB权限失败，请连接电脑并在命令行输入\"adb tcpip 5555\"后再点击重试</string>
     <string name="monkey_runparam">Monkey运行参数</string>
+    <string name="constant_global">全局</string>
 </resources>
