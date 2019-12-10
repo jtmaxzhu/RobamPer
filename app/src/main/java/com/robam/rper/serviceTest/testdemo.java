@@ -1,9 +1,16 @@
 package com.robam.rper.serviceTest;
 
+import android.support.v7.app.AppCompatActivity;
+
 import com.robam.rper.activity.MyApplication;
 import com.robam.rper.annotation.Param;
 import com.robam.rper.annotation.Provider;
 import com.robam.rper.injector.InjectorService;
+import com.robam.rper.injector.param.RunningThread;
+import com.robam.rper.injector.param.SubscribeParamEnum;
+import com.robam.rper.injector.param.Subscriber;
+import com.robam.rper.service.DisplayManager;
+import com.robam.rper.util.LogUtil;
 
 /**
  * author : liuxiaohu
@@ -11,7 +18,7 @@ import com.robam.rper.injector.InjectorService;
  * desc   :
  * version: 1.0
  */
-public class testdemo {
+public class testdemo extends AppCompatActivity {
     public testdemo() {
         InjectorService injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
         injectorService.register(this);
@@ -26,7 +33,8 @@ public class testdemo {
         System.out.println("111");
     }
 
-    private void testdemoProprivate(){
-        System.out.println("111");
+    @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
+    private void testdemoProprivate(final String appName){
+        LogUtil.d("testdemo","1111111");
     }
 }

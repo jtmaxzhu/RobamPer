@@ -95,7 +95,7 @@ public class PerformanceActivity extends BaseActivity {
                     ImageView img = (ImageView) v.findViewById(R.id.choose_icon);
                     img.setImageResource(R.drawable.icon_global);
                     TextView title = (TextView) v.findViewById(R.id.choose_title);
-                    title.setText(R.string.constant_global);
+                    title.setText(R.string.global);
                     TextView activity = (TextView) v.findViewById(R.id.choose_activity);
                     activity.setText("");
                 } else {
@@ -197,7 +197,7 @@ public class PerformanceActivity extends BaseActivity {
 
         spinner.setSelection(position + 1);
 
-        final View screenRecordBtn = findViewById(R.id.screen_record_btn);
+       // final View screenRecordBtn = findViewById(R.id.screen_record_btn);
 
 /*        screenRecordBtn.setOnClickListener(new View.OnClickListener() {
             @Override

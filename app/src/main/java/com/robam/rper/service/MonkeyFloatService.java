@@ -290,6 +290,7 @@ public class MonkeyFloatService extends BaseService {
         cardIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LogUtil.d(TAG,"进入cardIcon.setOnClickListener");
                 if (floatListener != null) {
                     floatListener.onFloatClick(true);
                 } else {

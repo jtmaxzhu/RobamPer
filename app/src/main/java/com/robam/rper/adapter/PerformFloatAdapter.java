@@ -128,7 +128,7 @@ public class PerformFloatAdapter extends BaseAdapter {
                             }
                         });
                     }else{
-                        List<DisplayItemInfo> removeItem = new ArrayList<>();
+                        List<DisplayItemInfo> removeItem = new ArrayList<>(2);
                         removeItem.add(mData.get(position));
                         isSelected.put(position, false);
                         displayManager.updateRecordingItems(null, removeItem);
@@ -158,6 +158,7 @@ public class PerformFloatAdapter extends BaseAdapter {
     }
     @Subscriber(value = @Param(DisplayManager.STOP_DISPLAY), thread = RunningThread.MAIN_THREAD)
     public void onDisplayStop() {
+        LogUtil.d("testdemo", "进入onDisplayStop");
         for (int i = 0; i < mData.size(); i++) {
             isSelected.put(i, false);
         }

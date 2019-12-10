@@ -397,7 +397,6 @@ public class InjectorService implements ExportService {
             LogUtil.w(TAG, "无法注册空对象");
             return REGISTER_NULL_OBJECT;
         }
-
         ClassInfo targetClassInfo = cache.getClassInfo(any.getClass());
 
         if (targetClassInfo == null) {

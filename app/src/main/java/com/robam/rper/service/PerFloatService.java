@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -18,7 +19,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Display;
@@ -41,15 +41,15 @@ import com.robam.rper.injector.param.SubscribeParamEnum;
 import com.robam.rper.injector.param.Subscriber;
 import com.robam.rper.service.base.BaseService;
 import com.robam.rper.tools.AppInfoProvider;
-import com.robam.rper.tools.BackgroundExecutor;
-import com.robam.rper.tools.CmdTools;
 import com.robam.rper.util.AppUtil;
 import com.robam.rper.util.ContextUtil;
 import com.robam.rper.util.LogUtil;
 import com.robam.rper.util.StringUtil;
 
+import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +62,7 @@ public class PerFloatService extends BaseService {
 
 
     private static final int UPDATE_RECORD_TIME = 103;
-    private static final String TAG = "FloatWinService";
+    private static final String TAG = "PerFloatService";
 
     public static final int RECORDING_ICON = R.drawable.recording;
     public static final int PLAY_ICON = R.drawable.start;
@@ -160,6 +160,7 @@ public class PerFloatService extends BaseService {
 
     @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
     public void setAppName(final String appName){
+        LogUtil.d(TAG, "进入setAppName");
         if (!StringUtil.equals(this.appName, appName)){
             this.appName = appName;
             handler.post(new Runnable() {
@@ -171,6 +172,7 @@ public class PerFloatService extends BaseService {
         }
     }
 
+    @Subscriber(@Param(MyApplication.SCREEN_ORIENTATION))
     public void setScreenOrientation(int orientation){
         if (orientation != currentOrientation){
             currentOrientation = orientation;
@@ -187,7 +189,7 @@ public class PerFloatService extends BaseService {
     private AlertDialog loadingDialog;
     private TextView messageText;
 
-    @Subscriber(value = @Param(value = MyApplication.SHOW_LOADING_DIALOG, sticky = false) )
+    @Subscriber(value = @Param(value = MyApplication.SHOW_LOADING_DIALOG, sticky = false), thread = RunningThread.MAIN_THREAD )
     public void startDialog(String message){
         //调用了长时间加载
         if (loadingDialog == null){
@@ -265,9 +267,6 @@ public class PerFloatService extends BaseService {
 
     private void createView(){
         view = LayoutInflater.from(this).inflate(R.layout.float_per, null);
-
-
-
         //关闭按钮
         close = view.findViewById(R.id.closeIcon);
         //数据采集按钮
@@ -389,7 +388,7 @@ public class PerFloatService extends BaseService {
                         state = MotionEvent.ACTION_UP;
                         updateViewPosition();
                         //缩小状态下点击移动小于10，10 恢复成原始状态
-                        if (Math.abs(x-StartX)<10 && Math.abs(y-StartY)<10 && backgroundIcon.getVisibility() == View.GONE){
+                        if (Math.abs(x-StartX)<10 && Math.abs(y-StartY)<10 && backgroundIcon.getVisibility() == View.VISIBLE){
                             //如果注册悬浮窗监听器
                             if (floatListener != null){
                                 floatListener.onFloatClick(false);
@@ -486,7 +485,7 @@ public class PerFloatService extends BaseService {
     /**
      * 初始化数据
      */
-    private void initData(){
+    private void initData(String name){
         if (appText != null){
             appText.setText(appName);
         }
@@ -494,9 +493,9 @@ public class PerFloatService extends BaseService {
 
     @Override
     public void onCreate() {
+        LogUtil.d(TAG, "onCreate");
         super.onCreate();
         handler = new TimeProcessHandler(this);
-        createView();
         mInjectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
         mInjectorService.register(this);
         if (provider == null){
@@ -504,7 +503,7 @@ public class PerFloatService extends BaseService {
             mInjectorService.register(provider);
         }
         createView();
-        initData();
+        initData(appName);
 
     }
 
@@ -528,11 +527,12 @@ public class PerFloatService extends BaseService {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new PerFloatBinder(this);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
+        LogUtil.d(TAG,"进入onUnbind");
         runListener = null;
         floatListener = null;
         stopListener = null;
@@ -541,6 +541,42 @@ public class PerFloatService extends BaseService {
         return super.onUnbind(intent);
     }
 
+    @Override
+    public void onDestroy() {
+        // 清理定时任务
+        mInjectorService.unregister(this.provider);
+        this.provider = null;
+
+        LogUtil.w(TAG, "FloatWin onDestroy");
+        writeFileData(fileName, "destroy recording:" + new Date());
+        div = 0;
+        //
+        wm.removeView(view);
+
+        //InjectorService.getInstance().stopInjection();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("config", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("state", "stop");
+        editor.apply();
+        // 取消注册广播
+        super.onDestroy();
+    }
+
+    public void writeFileData(String fileName, String message) {
+        try {
+            FileOutputStream fout = openFileOutput(fileName, MODE_APPEND);
+
+            byte[] bytes = message.getBytes();
+            fout.write(bytes);
+            bytes = "\n".getBytes();
+            fout.write(bytes);
+            fout.close();
+        } catch (Exception e) {
+            LogUtil.e(TAG, "Catch Exception: " + e.getMessage(), e);
+        }
+
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -738,6 +774,7 @@ public class PerFloatService extends BaseService {
             service.handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    LogUtil.d(TAG,"停止服务");
                     service.stopSelf();
                 }
             });

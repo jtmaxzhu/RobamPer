@@ -104,6 +104,11 @@ public class MyApplication extends Application {
      */
     public static boolean DEBUG = false;
 
+    /**
+     * 屏幕方向监控
+     */
+    public static final String SCREEN_ORIENTATION = "screenOrientation";
+
     private Stack<ContextInstanceWrapper> openedActivity = new Stack<>();
     private Stack<ContextInstanceWrapper> openedService = new Stack<>();
 
@@ -312,7 +317,7 @@ public class MyApplication extends Application {
     public void init(){
         //注册自身信息
         injectorService = findServiceByName(InjectorService.class.getName());
-        //injectorService.register(this);
+        injectorService.register(this);
         //文件下载和crash日志存储
         initLibraries();
 
@@ -1109,7 +1114,8 @@ public class MyApplication extends Application {
         injectorService.pushMessage(SubscribeParamEnum.APP, appPackage, true);
         injectorService.pushMessage(SubscribeParamEnum.APP_NAME, appName, true);
 
-        getSharedPreferences("MonkeyFloatService", MODE_PRIVATE).edit().putString("float_app", appName + "##" + appPackage).apply();
+       // getSharedPreferences("MonkeyFloatService", MODE_PRIVATE).edit().putString("float_app", appName + "##" + appPackage).apply();
+        getSharedPreferences("PerFloatService", MODE_PRIVATE).edit().putString("float_app", appName + "##" + appPackage).apply();
     }
 
 

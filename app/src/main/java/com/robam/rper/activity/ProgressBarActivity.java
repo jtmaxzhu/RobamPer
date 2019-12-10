@@ -20,7 +20,7 @@ import com.robam.rper.util.LogUtil;
 import java.lang.ref.WeakReference;
 
 
-@EntryActivity(icon = R.drawable.xn, name = "进度条", index = 4)
+//@EntryActivity(icon = R.drawable.xn, name = "进度条", index = 4)
 public class ProgressBarActivity extends BaseActivity  {
 
     private static final String TAG = ProgressBarActivity.class.getSimpleName();

@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * desc   :
  * version: 1.0
  */
-//@Provider(@Param(value = DisplayManager.STOP_DISPLAY))
+@Provider(@Param(value = DisplayManager.STOP_DISPLAY))
 public class DisplayManager {
 
     private static final String TAG = "DisplayManager";
@@ -118,7 +118,7 @@ public class DisplayManager {
 
         //发送停止显示消息，去掉已经勾选的选项
         injectorService.pushMessage(STOP_DISPLAY, null, false);
-        //injectorService.unregister(this);
+        injectorService.unregister(this);
         this.displayMessages.clear();
         this.currentDisplayInfo.clear();
     }
@@ -171,18 +171,22 @@ public class DisplayManager {
      */
     private void start(){
         connection = new DisplayConnection(this);
-        Context context = MyApplication.getInstance();
+        Context context = MyApplication.getContext();
         injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
 
         runningFlag = true;
+
+        Intent intent = new Intent(context, PerFloatService.class);
         //绑定服务
-        context.bindService(new Intent(context, PerFloatService.class), connection, Context.BIND_AUTO_CREATE);
+        Boolean b = context.bindService(new Intent(context, PerFloatService.class), connection, Context.BIND_AUTO_CREATE);
+        LogUtil.d(TAG,"b:"+b);
         executorService.schedule(new Runnable() {
             @Override
             public void run() {
                 if (runningFlag){
                     executorService.schedule(this, 500, TimeUnit.MILLISECONDS);
                 }
+                //LogUtil.d(TAG,"runningFlag:"+runningFlag);
                 updateDisplayInfo();
             }
         }, 500, TimeUnit.MILLISECONDS);
@@ -200,7 +204,7 @@ public class DisplayManager {
                 @Override
                 public void run() {
                     LogUtil.d(TAG,"floatWinAdapter"+floatWinAdapter);
-                   // floatWinAdapter.updateListViewSource(currentDisplayInfo, displayMessages);
+                    floatWinAdapter.updateListViewSource(currentDisplayInfo, displayMessages);
                 }
             });
         }
@@ -252,7 +256,6 @@ public class DisplayManager {
      * @param context
      * @return
      */
-    @SuppressLint("ClickableViewAccessibility")
     private View provideMainView(Context context){
         if (runningMode == DisplayProvider.RECORDING_MODE){
             return null;
@@ -267,7 +270,7 @@ public class DisplayManager {
         });
         floatWinAdapter = new FloatWinAdapter(context, this, currentDisplayInfo);
         floatWinList.setAdapter(floatWinAdapter);
-        floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 1, context.getResources().getColor(R.color.divider_color)));
+        floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 1, context.getResources().getColor(R.color.divider_color1)));
         return floatWinList;
     }
 
@@ -297,6 +300,7 @@ public class DisplayManager {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            LogUtil.d(TAG,"进入onServiceConnected");
             if (ref.get() == null){
                 return;
             }
@@ -317,6 +321,7 @@ public class DisplayManager {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            LogUtil.d(TAG,"进入onServiceDisconnected");
             if (ref.get() == null){
                 return;
             }
