@@ -41,17 +41,27 @@
         <service
             android:name=".serviceTest.MyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
         <service
             android:name=".serviceTest.DownloadService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+
+        <service
+            android:name=".service.MonkeyFloatService"
+            android:enabled="true"
+            android:exported="true"/>
 
         <activity android:name=".activity.ServiceActivity" />
 
         <service
             android:name=".service.MonkeyFloatService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".service.PerFloatService"
             android:enabled="true"
             android:exported="true" />
 
