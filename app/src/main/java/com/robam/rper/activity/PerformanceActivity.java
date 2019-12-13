@@ -55,10 +55,10 @@ public class PerformanceActivity extends BaseActivity {
         this.app = app;
     }
 
-    @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
+/*    @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
     public void testdemoProprivate(final String appName){
         LogUtil.d("PerFloatService","appName"+appName);
-    }
+    }*/
 
 
     @Override
