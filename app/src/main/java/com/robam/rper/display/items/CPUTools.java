@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.SparseArray;
 
 
+import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
 import com.robam.rper.annotation.Param;
 import com.robam.rper.bean.ProcessInfo;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "CPU")
+@DisplayItem(name = "CPU", icon = R.drawable.cpu)
 public class CPUTools implements Displayable {
 
 	private static final String TAG = "CPUTools";

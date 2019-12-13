@@ -34,8 +34,6 @@
 
             </LinearLayout>
 
-            <include layout="@layout/divider" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,16 +86,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@color/divider_color"
-                    android:dividerHeight="0dip"></com.robam.rper.ui.TotalMeasureListView>
+                    android:dividerHeight="0dip">
+                </com.robam.rper.ui.TotalMeasureListView>
+
+
                 <include layout="@layout/divider" />
 
-                <!--<include layout="@layout/screen_record_entry"
-                    android:id="@+id/screen_record_btn"/>-->
-
             </LinearLayout>
-            <include layout="@layout/divider" />
 
-       <!--     <LinearLayout
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:background="@color/default_background_color"
@@ -114,11 +112,11 @@
                     android:textSize="14dp" />
             </LinearLayout>
 
-            <include layout="@layout/divider" />-->
+            <include layout="@layout/divider" />
 
-           <!-- <include
+            <include
                 android:id="@+id/chart_button"
-                layout="@layout/clickable_item" />-->
+                layout="@layout/clickable_item" />
 
             <include layout="@layout/divider" />
 
@@ -141,27 +139,27 @@
 
             <include layout="@layout/divider" />
 
-          <!--  <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="16dp">
 
-                <com.alipay.hulu.ui.TotalMeasureListView
+                <com.robam.rper.ui.TotalMeasureListView
                     android:id="@+id/perform_stress_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@color/divider_color"
-                    android:dividerHeight="0dip"></com.alipay.hulu.ui.TotalMeasureListView>
-            </LinearLayout>-->
+                    android:dividerHeight="0dip"></com.robam.rper.ui.TotalMeasureListView>
+            </LinearLayout>
 
-           <!-- <include layout="@layout/divider" />
+            <include layout="@layout/divider" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:background="@color/default_background_color"
-                android:orientation="horizontal" />-->
+                android:orientation="horizontal" />
 
         </LinearLayout>
     </ScrollView>

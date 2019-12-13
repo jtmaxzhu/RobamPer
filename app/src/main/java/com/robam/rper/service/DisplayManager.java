@@ -270,7 +270,7 @@ public class DisplayManager {
         });
         floatWinAdapter = new FloatWinAdapter(context, this, currentDisplayInfo);
         floatWinList.setAdapter(floatWinAdapter);
-        floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 1, context.getResources().getColor(R.color.divider_color1)));
+        floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 0, context.getResources().getColor(R.color.divider_color1)));
         return floatWinList;
     }
 

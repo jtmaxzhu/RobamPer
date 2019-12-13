@@ -333,8 +333,6 @@ public class MyApplication extends Application {
 
         Timer timer = new Timer("AUTO_CLEAR_FILE");
         timer.schedule(CLEAR_FILES_TASK, 5*1000, 3 * 60 * 60 * 1000);
-        testdemo ts = new testdemo();
-        ts.testdemoPro();
     }
 
 

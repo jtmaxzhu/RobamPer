@@ -14,11 +14,8 @@ import com.robam.rper.service.SPService;
 import com.robam.rper.tools.BackgroundExecutor;
 import com.robam.rper.util.FileUtils;
 import com.robam.rper.util.LogUtil;
-import com.robam.rper.util.MiscUtil;
 import com.robam.rper.util.PermissionUtil;
 import com.robam.rper.util.StringUtil;
-
-import org.w3c.dom.ls.LSOutput;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -95,7 +92,6 @@ public class LoadingActivity extends BaseActivity {
                         break;
                     }
                 }
-
                 // 主线程跳转下
                 MyApplication.getInstance().runOnUiThread(new Runnable() {
                     public void run() {

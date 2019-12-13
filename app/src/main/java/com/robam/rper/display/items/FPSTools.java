@@ -19,7 +19,6 @@ import android.content.Context;
 import android.os.BatteryManager;
 import android.os.Build;
 
-
 import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
 import com.robam.rper.display.items.base.DisplayItem;
@@ -36,8 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "电池", icon = R.drawable.batter)
-public class BatteryInfo implements Displayable {
+@DisplayItem(name = "帧率", permissions = "toast:请在设置里\"开发人员选项\"中开启\"GPU呈现模式分析\"选项", icon = R.drawable.fps)
+public class FPSTools implements Displayable {
+
 
 	@Override
 	public void start() {

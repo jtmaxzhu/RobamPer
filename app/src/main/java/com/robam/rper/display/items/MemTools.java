@@ -15,29 +15,17 @@
  */
 package com.robam.rper.display.items;
 
-import android.content.Context;
-import android.os.BatteryManager;
-import android.os.Build;
-
-
 import com.robam.rper.R;
-import com.robam.rper.activity.MyApplication;
 import com.robam.rper.display.items.base.DisplayItem;
 import com.robam.rper.display.items.base.Displayable;
 import com.robam.rper.display.items.base.RecordPattern;
-import com.robam.rper.tools.CmdTools;
-import com.robam.rper.util.LogUtil;
-import com.robam.rper.util.StringUtil;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "电池", icon = R.drawable.batter)
-public class BatteryInfo implements Displayable {
+@DisplayItem(name = "内存", icon = R.drawable.mem)
+public class MemTools implements Displayable {
+
 
 	@Override
 	public void start() {
