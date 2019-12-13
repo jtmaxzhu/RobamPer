@@ -19,6 +19,7 @@ import com.robam.rper.display.DisplayItemInfo;
 import com.robam.rper.display.DisplayProvider;
 import com.robam.rper.injector.InjectorService;
 import com.robam.rper.injector.param.RunningThread;
+import com.robam.rper.injector.param.SubscribeParamEnum;
 import com.robam.rper.injector.param.Subscriber;
 import com.robam.rper.service.DisplayManager;
 import com.robam.rper.util.LogUtil;
@@ -48,6 +49,21 @@ public class PerformFloatAdapter extends BaseAdapter {
     private DisplayManager displayManager;
 
     private Map<Integer, Boolean> isSelected;
+
+   /* private  static PerformFloatAdapter mInstance;
+
+    public static PerformFloatAdapter getInstance(Activity context){
+        if (mInstance == null){
+            mInstance = new PerformFloatAdapter(context);
+        }
+        return mInstance;
+    }*/
+
+   public void unRegister(){
+       InjectorService injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
+       injectorService.unregister(this);
+   }
+
 
 
     public PerformFloatAdapter(Activity context) {
@@ -164,5 +180,7 @@ public class PerformFloatAdapter extends BaseAdapter {
         }
         notifyDataSetChanged();
     }
+
+
 
 }

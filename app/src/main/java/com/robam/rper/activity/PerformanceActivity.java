@@ -21,6 +21,7 @@ import com.robam.rper.R;
 import com.robam.rper.adapter.PerformFloatAdapter;
 import com.robam.rper.annotation.EntryActivity;
 import com.robam.rper.annotation.Param;
+import com.robam.rper.injector.InjectorService;
 import com.robam.rper.injector.param.SubscribeParamEnum;
 import com.robam.rper.injector.param.Subscriber;
 import com.robam.rper.tools.BackgroundExecutor;
@@ -54,14 +55,30 @@ public class PerformanceActivity extends BaseActivity {
         this.app = app;
     }
 
+    @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
+    public void testdemoProprivate(final String appName){
+        LogUtil.d("PerFloatService","appName"+appName);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        InjectorService injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
+        injectorService.unregister(this);
+        mPerfFloatAdapter.unRegister();
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_performance);
 
-        mPerfFloatAdapter = new PerformFloatAdapter(this);
+        InjectorService injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
+        injectorService.register(this);
 
+        mPerfFloatAdapter = new PerformFloatAdapter(this);
+//        mPerfFloatAdapter = PerformFloatAdapter.getInstance(this);
 
         mPanel = (HeadControlPanel) findViewById(R.id.head_layout);
         mPanel.setMiddleTitle("性能测试");

@@ -33,8 +33,5 @@ public class testdemo extends AppCompatActivity {
         System.out.println("111");
     }
 
-    @Subscriber(@Param(SubscribeParamEnum.APP_NAME))
-    private void testdemoProprivate(final String appName){
-        LogUtil.d("testdemo","1111111");
-    }
+
 }
