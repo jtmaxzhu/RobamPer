@@ -90,6 +90,13 @@ public class PerformFloatAdapter extends BaseAdapter {
         }
         InjectorService injectorService = MyApplication.getInstance().findServiceByName(InjectorService.class.getName());
         injectorService.register(this);
+        /**内存数据
+         * mData = {DisplayItemInfo}
+         *       ->->name="CPU"
+         *          *      ->level=1
+         *          *      ->targetClass=class com.robam.rper.display.items.CPUTools
+         *          *      ->...
+         */
     }
 
     @Override
