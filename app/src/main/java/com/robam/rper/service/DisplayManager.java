@@ -262,12 +262,12 @@ public class DisplayManager {
         }
         floatWinList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.display_main_layout, null);
         floatWinList.setLayoutManager(new LinearLayoutManager(context));
-        floatWinList.setOnTouchListener(new View.OnTouchListener() {
+ /*       floatWinList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return false;
             }
-        });
+        });*/
         floatWinAdapter = new FloatWinAdapter(context, this, currentDisplayInfo);
         floatWinList.setAdapter(floatWinAdapter);
         floatWinList.addItemDecoration(new RecycleViewDivider(context, HORIZONTAL_LIST, 0, context.getResources().getColor(R.color.divider_color1)));

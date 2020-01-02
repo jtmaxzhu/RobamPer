@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "电池", icon = R.drawable.batter)
+//@DisplayItem(name = "电池", icon = R.drawable.batter)
 public class BatteryInfo implements Displayable {
 
 	@Override

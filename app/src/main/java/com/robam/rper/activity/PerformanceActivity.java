@@ -36,7 +36,8 @@ import com.robam.rper.util.StringUtil;
 import java.util.List;
 
 
-@EntryActivity(icon = R.drawable.xn, name = "性能工具", permissions = {"adb", "float"}, index = 1)
+//@EntryActivity(icon = R.drawable.xn, name = "性能工具", permissions = {"adb", "float"}, index = 1)
+@EntryActivity(icon = R.drawable.xn, name = "性能工具", index = 1)
 public class PerformanceActivity extends BaseActivity {
     private HeadControlPanel mPanel;
     private String TAG = "PerformanceFragment";
@@ -78,7 +79,6 @@ public class PerformanceActivity extends BaseActivity {
         injectorService.register(this);
 
         mPerfFloatAdapter = new PerformFloatAdapter(this);
-//        mPerfFloatAdapter = PerformFloatAdapter.getInstance(this);
 
         mPanel = (HeadControlPanel) findViewById(R.id.head_layout);
         mPanel.setMiddleTitle("性能测试");

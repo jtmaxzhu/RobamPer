@@ -23,7 +23,7 @@ import com.robam.rper.display.items.base.RecordPattern;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "内存", icon = R.drawable.mem)
+//@DisplayItem(name = "内存", icon = R.drawable.mem)
 public class MemTools implements Displayable {
 
 

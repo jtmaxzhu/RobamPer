@@ -129,22 +129,6 @@ public class IndexActivity extends BaseActivity {
         return sb.toString();
     }
 
-/*    private void setDebug(int port) {
-        try {
-            Runtime.getRuntime().exec("su");
-            File file = new File("/data/");
-            file.canWrite();
-            Runtime.getRuntime().exec("setprop service.adb.tcp.port " + port);
-            Runtime.getRuntime().exec("stop adbd");
-            Runtime.getRuntime().exec("start adbd");
-            MyApplication.getInstance().showToast("adb connect \"" + getWifiAddress() + ":5555");
-        } catch (Exception e) {
-            MyApplication.getInstance().showToast("Can not get root permission");
-        }
-    }*/
-
-
-
     public static class Entry{
         private int iconId;
         private String name;
@@ -277,26 +261,6 @@ public class IndexActivity extends BaseActivity {
                         @Override
                         public void onPermissionResult(boolean result, String reason) {
                             if (result){
-  /*                               if (mPanel != null){
-                                   Integer count = entryCount.getInteger(entry.name);
-                                    if (count == null) {
-                                        count = 1;
-                                    } else {
-                                        count ++;
-                                    }
-                                    entryCount.put(entry.name, count);
-                                    versionsCount.put(Integer.toString(currentVersionCode), entryCount);
-                                    SPService.putString(SPService.KEY_INDEX_RECORD, JSON.toJSONString(versionsCount));
-
-                                    mPanel.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            LogUtil.d(TAG, entry.targetActivity.getName());
-                                            Intent intent = new Intent(IndexActivity.this, entry.targetActivity);
-                                            startActivity(intent);
-                                        }
-                                    });
-                                }*/
                                 LogUtil.d(TAG, entry.targetActivity.getName());
                                 Intent intent = new Intent(IndexActivity.this, entry.targetActivity);
                                 startActivity(intent);

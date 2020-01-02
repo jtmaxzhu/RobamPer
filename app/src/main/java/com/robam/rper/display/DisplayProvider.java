@@ -69,6 +69,16 @@ public class DisplayProvider implements ExportService {
         this.scheduExecutor = Executors.newSingleThreadScheduledExecutor();
         this.executorService = Executors.newCachedThreadPool();
         this.cachedContent = new ConcurrentHashMap<>();
+        /**内存数据
+         *  this.allDisplayItems={HashMap}  size = 1
+         *  0 = HashMap$Node->
+         *    ->key = "cpu"
+         *    ->vaule={DisplayOtemInfo}
+         *      ->name="CPU"
+         *      ->level=1
+         *      ->targetClass=class com.robam.rper.display.items.CPUTools
+         *      ->...
+         */
 
 
     }
@@ -295,11 +305,22 @@ public class DisplayProvider implements ExportService {
      * @return
      */
     private Map<String, DisplayItemInfo> loadDisplayItem(){
+        /**
+         * allDisplayable = {ArrayList@xxxx} size = 5
+         * 0 = class com.robam.rper.display.items.BatteryInfo
+         * 1 = class com.robam.rper.display.items.CPUTools
+         * 2 = class com.robam.rper.display.items.FPSTools
+         * 3 = class com.robam.rper.display.items.MemTools
+         * 4 = class com.robam.rper.display.items.NetTools
+         */
         List<Class<? extends Displayable>> allDisplayable = ClassUtil.findSubClass(Displayable.class, DisplayItem.class);
         if (allDisplayable != null && allDisplayable.size() > 0){
             Map<String, DisplayItemInfo> infoMap = new HashMap<>(allDisplayable.size()+1);
             //加载类信息
             for (Class<? extends Displayable> clazz : allDisplayable){
+                /**
+                 * annotation = @com.robam.rper.display.items.base.DisplayItem(icon=2131165289, level=1, name=CPU, permissions=[], tip=, trigger=)
+                 */
                 DisplayItem annotation = clazz.getAnnotation(DisplayItem.class);
                 if (annotation != null){
                     DisplayItemInfo info = new DisplayItemInfo(annotation, clazz);
@@ -314,6 +335,9 @@ public class DisplayProvider implements ExportService {
 
                 }
             }
+            /**infoMap内存数据
+             * 0 = (KEY = "CPU"; value=DisplayIteminfo )
+             */
             return infoMap;
         }
 

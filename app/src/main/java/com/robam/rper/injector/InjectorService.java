@@ -139,7 +139,7 @@ public class InjectorService implements ExportService {
         updateExecutor.scheduleAtFixedRate(updateProviders, 500, 500, TimeUnit.MILLISECONDS);
 
         // 注册下有provider的类
-        BackgroundExecutor.execute(new Runnable() {
+        /*BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 long startTime = System.currentTimeMillis();
@@ -159,7 +159,7 @@ public class InjectorService implements ExportService {
                     registerClass(provider);
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -195,7 +195,7 @@ public class InjectorService implements ExportService {
             LogUtil.e(TAG, "无法移除空对象");
             return;
         }
-
+        LogUtil.d(TAG, "当前正在卸载类"+any.getClass().getName());
         ClassInfo info = cache.getClassInfo(any.getClass());
 
         // 又包含provider信息
@@ -416,7 +416,7 @@ public class InjectorService implements ExportService {
                 }
 
                 // 添加到reference中
-                paramMeta.addToReference(reference, any);
+                paramMeta. addToReference(reference, any);
             }
         }
 

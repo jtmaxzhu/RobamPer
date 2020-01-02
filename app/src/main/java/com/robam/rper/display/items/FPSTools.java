@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "帧率", permissions = "toast:请在设置里\"开发人员选项\"中开启\"GPU呈现模式分析\"选项", icon = R.drawable.fps)
+//@DisplayItem(name = "帧率", permissions = "toast:请在设置里\"开发人员选项\"中开启\"GPU呈现模式分析\"选项", icon = R.drawable.fps)
 public class FPSTools implements Displayable {
 
 

@@ -23,7 +23,7 @@ import com.robam.rper.display.items.base.RecordPattern;
 import java.util.List;
 import java.util.Map;
 
-@DisplayItem(name = "网络", trigger = "清零", icon = R.drawable.net)
+//@DisplayItem(name = "网络", trigger = "清零", icon = R.drawable.net)
 public class NetTools implements Displayable {
 
 

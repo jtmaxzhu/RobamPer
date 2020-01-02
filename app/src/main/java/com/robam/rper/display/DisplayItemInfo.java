@@ -51,6 +51,15 @@ public class DisplayItemInfo {
 
 
     public DisplayItemInfo(DisplayItem displayItem, Class<? extends Displayable> targetClass) {
+        /**DEBUG内存数据案例
+         * this.targetClass = class com.robam.rper.display.items.CPUTools;
+         * this.name = "CPU";
+         * this.permissions = {"adb", "float"};
+         * this.tip = "";
+         * this.icon = "2131165289";
+         *this.level = 0;
+         *this.trigger = "";
+         */
         this.targetClass = targetClass;
         this.name = displayItem.name();
         this.permissions = Arrays.asList(displayItem.permissions());

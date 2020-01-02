@@ -32,8 +32,11 @@ public class ClassInfoCache {
      * @return
      */
     public ClassInfo getClassInfo(Class<?> type) {
+        //先从哈希表classInfoCache中找是否存在目标类信息
         ClassInfo target = classInfoCache.get(type);
         if (target == null) {
+            //如果没有就开始加载目标类的信息
+            LogUtil.d(TAG, "当前正在加载类"+type.getName());
             target = loadClassInfo(type);
             classInfoCache.put(type, target);
         }
