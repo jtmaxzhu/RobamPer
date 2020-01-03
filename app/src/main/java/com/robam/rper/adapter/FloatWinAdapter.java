@@ -83,6 +83,10 @@ public class FloatWinAdapter extends RecyclerView.Adapter<FloatWinAdapter.Inform
         this.contents = messages;
         //强制刷新RecyClerView列表
         notifyDataSetChanged();
+        /**
+         *  this.listViewData{ArrayList@xxxx} = (0=displayItemInfo = (name="CPU"，targetClass=class com.robam.rper.display.items.CPUTools))
+         *  this.contents{ArrayList@xxxx} = 全局:8.27%
+         */
     }
 
 

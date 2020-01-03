@@ -160,6 +160,11 @@ public class DisplayManager {
             stop();
         }
         return failed;
+        /**内存数据
+         * newItems={ArrayList} size=1 0={DisplayItemInfo} (level=1 , name="cpu" targetClass="class com.robam.rper.display.items.CPUTools")
+         * removeItems=null
+         * currentDisplayInfo={ArrayList@xxxx}(0=DisplayItemInfo@xxxx)
+         */
 
 
     }
@@ -208,6 +213,10 @@ public class DisplayManager {
                 }
             });
         }
+        /**内存数据
+         * displayMessages{全局:6.78%}
+         *
+         */
     }
 
 

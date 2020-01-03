@@ -92,10 +92,11 @@ public class PerformFloatAdapter extends BaseAdapter {
         injectorService.register(this);
         /**内存数据
          * mData = {DisplayItemInfo}
-         *       ->->name="CPU"
-         *          *      ->level=1
-         *          *      ->targetClass=class com.robam.rper.display.items.CPUTools
-         *          *      ->...
+         *       ->name="CPU"
+         *       ->level=1
+         *        ->targetClass=class com.robam.rper.display.items.CPUTools
+         *        ->...
+         * runningItems size=0
          */
     }
 

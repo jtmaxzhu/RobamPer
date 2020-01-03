@@ -176,6 +176,13 @@ public class DisplayProvider implements ExportService {
             }
             isRunning = false;
         }
+        /**内存数据
+         * wrapper={isRunning=false,lastCallTime=0,maxSpendTime=20,minSpendTime=20,reference={CPUTools@xxxx}}
+         * wrapper.isRunning=false
+         * entry.getKey()="CPU"
+         *
+         *
+         */
     };
 
 
@@ -206,6 +213,13 @@ public class DisplayProvider implements ExportService {
                 }
             }
         };
+        /**内存数据
+         * runningDisplay={ConcurrentHashMap}(key="cpu",value={DisplayProvider$DisplayWrapper@xxxx（wrapper={isRunning=false,lastCallTime=0,maxSpendTime=20,minSpendTime=20,reference={CPUTools@xxxx}}）})
+         * cachedContent{ConcurrentHashMap}
+         * ->key = "CPU"
+         * ->value= "全局:9.99%"
+         *
+         */
     }
 
 
@@ -244,6 +258,15 @@ public class DisplayProvider implements ExportService {
             LogUtil.e(TAG, "构造显示项抛出异常", e);
         }
         return false;
+        /**内存数据
+         * displayItemInfo = (name="CPU"，targetClass=class com.robam.rper.display.items.CPUTools)
+         * displayable={CPUTools@xxxx}
+         * wrapper={isRunning=false,lastCallTime=0,maxSpendTime=20,minSpendTime=20,reference={CPUTools@xxxx}}
+         * runningDisplay={ConcurrentHashMap}(key="cpu",value={DisplayProvider$DisplayWrapper@xxxx（wrapper={isRunning=false,lastCallTime=0,maxSpendTime=20,minSpendTime=20,reference={CPUTools@xxxx}}）})
+         *
+         *
+         *
+         */
     }
 
     /**
