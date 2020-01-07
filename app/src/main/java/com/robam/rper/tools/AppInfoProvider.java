@@ -43,6 +43,7 @@ public class AppInfoProvider {
             @Param(SubscribeParamEnum.TOP_ACTIVITY)}, updatePeriod = 4999)
     public Map<String, Object> provide() {
         Map<String, Object> result = new HashMap<>(8);
+        LogUtil.d(TAG,"运行provide函数");
 
         ProcessInfo process = new ProcessInfo(0, MAIN);
 
@@ -65,6 +66,7 @@ public class AppInfoProvider {
             ApplicationInfo info = context.getPackageManager().getApplicationInfo(appName, PackageManager.GET_ACTIVITIES);
 
             result.put(SubscribeParamEnum.UID, info.uid);
+            LogUtil.d(TAG,"info.uid"+info.uid);
 
         } catch (Exception e) {
             // 当catch到Interrupt，属于onDestroy调用，直接结束
@@ -78,6 +80,8 @@ public class AppInfoProvider {
 
         String activity = CmdTools.execAdbCmd("dumpsys activity top | grep \"ACTIVITY " + appName + "\"", 1000);
         int filterPid = findTopPid(result, activity);
+        LogUtil.d(TAG,"activity："+activity);
+        LogUtil.d(TAG,"filterPid："+filterPid);
 
         // 查询PID，针对该应用所有进程
         String[] pids = CmdTools.ps(appName);

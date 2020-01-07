@@ -1,5 +1,6 @@
 package com.robam.rper.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import com.robam.rper.service.SPService;
 import com.robam.rper.ui.ColorFilterRelativeLayout;
 import com.robam.rper.ui.HeadControlPanel;
 import com.robam.rper.util.ClassUtil;
+import com.robam.rper.util.FileUtils;
 import com.robam.rper.util.LogUtil;
 import com.robam.rper.util.PermissionUtil;
 import com.robam.rper.util.StringUtil;
@@ -52,23 +54,27 @@ public class IndexActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
-
-        mPanel = (HeadControlPanel) findViewById(R.id.head_layout);
-        mPanel.setMiddleTitle(getString(R.string.app_name));
-        mPanel.setInfoIconClickListener(R.drawable.icon_config, new View.OnClickListener() {
+        PermissionUtil.requestPermissions(Arrays.asList("adb","float"), this, new PermissionUtil.OnPermissionCallback() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(IndexActivity.this, AdbSettingActivity.class));
+            public void onPermissionResult(boolean result, String reason) {
+                mPanel = (HeadControlPanel) findViewById(R.id.head_layout);
+                mPanel.setMiddleTitle(getString(R.string.app_name));
+                mPanel.setInfoIconClickListener(R.drawable.icon_config, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(IndexActivity.this, AdbSettingActivity.class));
+                    }
+                });
+                mPanel.setBackIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+                mGridView = (GridView) findViewById(R.id.tools_grid);
+                initData();
             }
         });
-        mPanel.setBackIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        mGridView = (GridView) findViewById(R.id.tools_grid);
-        initData();
     }
 
     private void  initData(){

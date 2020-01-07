@@ -641,7 +641,7 @@ public class PerFloatService extends BaseService {
                         }
                         floatWrapper.setVisibility(View.VISIBLE);
                     }else {
-                        floatDisplay.setVisibility(View.GONE);
+                        floatWrapper.setVisibility(View.GONE);
                     }
 
                 }

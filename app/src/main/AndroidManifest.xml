@@ -38,7 +38,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.testActivity"></activity>
+        <activity android:name=".activity.PerformanceChartActivity"></activity>
+        <activity android:name=".activity.RecordManageActivity" />
 
         <service
             android:name=".serviceTest.MyService"

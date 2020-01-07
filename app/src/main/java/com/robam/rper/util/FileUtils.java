@@ -102,7 +102,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     public static File getRperDir() {
         if (rperBaseDir == null) {
             if (RPER_FOLDER_NAME == null) {
-                RPER_FOLDER_NAME = SPService.getString(SPService.KEY_RPER_PATH_NAME, "RobamPer");
+                RPER_FOLDER_NAME = SPService.getString(SPService.KEY_RPER_PATH_NAME, "rper");
             }
 
             rperBaseDir = new File(Environment.getExternalStorageDirectory(), RPER_FOLDER_NAME);

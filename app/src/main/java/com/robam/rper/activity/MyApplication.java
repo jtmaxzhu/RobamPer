@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -1012,7 +1013,13 @@ public class MyApplication extends Application {
                         });
                     }
                     dialog = builder.create();
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                        // 注意TYPE_SYSTEM_ALERT从Android8.0开始被舍弃了
+                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    } else {
+                        // 从Android8.0开始悬浮窗要使用TYPE_APPLICATION_OVERLAY
+                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                    }
                     dialog.setCanceledOnTouchOutside(false);                                   //点击外面区域不会让dialog消失
                     dialog.setCancelable(false);
                 } else {

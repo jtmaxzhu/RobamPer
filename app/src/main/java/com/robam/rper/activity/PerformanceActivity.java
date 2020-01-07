@@ -36,7 +36,7 @@ import com.robam.rper.util.StringUtil;
 import java.util.List;
 
 
-@EntryActivity(icon = R.drawable.xn, name = "性能工具", permissions = {"adb", "float"}, index = 1)
+@EntryActivity(icon = R.drawable.xn, name = "性能工具", index = 1)
 //@EntryActivity(icon = R.drawable.xn, name = "性能工具", index = 1)
 public class PerformanceActivity extends BaseActivity {
     private HeadControlPanel mPanel;
@@ -214,74 +214,14 @@ public class PerformanceActivity extends BaseActivity {
 
         spinner.setSelection(position + 1);
 
-       // final View screenRecordBtn = findViewById(R.id.screen_record_btn);
-
-/*        screenRecordBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    toastShort("此功能不支持Android5.0以下设备");
-                    return;
-                }
-
-                if (ClassUtil.getPatchInfo(VideoAnalyzer.SCREEN_RECORD_PATCH) == null) {
-                    MyApplication.getInstance().showDialog(PerformanceActivity.this, "是否加载录屏耗时计算插件?", "是", new Runnable() {
-                        @Override
-                        public void run() {
-                            showProgressDialog("插件下载中");
-                            BackgroundExecutor.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    PatchLoadResult rs = AssetsManager.loadPatchFromServer(VideoAnalyzer.SCREEN_RECORD_PATCH, new PrepareUtil.PrepareStatus() {
-                                        @Override
-                                        public void currentStatus(int progress, int total, String message, boolean status) {
-                                            updateProgressDialog(progress, total, message);
-                                        }
-                                    });
-                                    if (rs == null) {
-                                        // 降级到网络模式
-                                        dismissProgressDialog();
-                                        toastLong("无法加载计算插件");
-                                        return;
-                                    }
-
-                                    dismissProgressDialog();
-                                    screenRecordBtn.callOnClick();
-                                }
-                            });
-
-                        }
-                    }, "否", null);
-                    return;
-                }
-
-                if (!PermissionUtil.isFloatWindowPermissionOn(PerformanceActivity.this)) {
-                    return;
-                }
-
-                PermissionUtil.grantHighPrivilegePermissionAsync(new CmdTools.GrantHighPrivPermissionCallback() {
-                    @Override
-                    public void onGrantSuccess() {
-                        startActivity(new Intent(PerformanceActivity.this, RecorderConfigActivity.class));
-                    }
-
-                    @Override
-                    public void onGrantFail(String msg) {
-                        toastLong("设备需要开启ADB 5555端口并授权调试才可使用" +
-                                "\n请在命令行执行 adb tcpip 5555");
-                    }
-                });
-            }
-        });*/
-
-      /*  LinearLayout button = (LinearLayout) findViewById(R.id.chart_button);
+        LinearLayout button = (LinearLayout) findViewById(R.id.chart_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PerformanceActivity.this, PerformanceChartActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
     }
 }

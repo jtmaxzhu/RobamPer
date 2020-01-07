@@ -139,7 +139,7 @@ public class InjectorService implements ExportService {
         updateExecutor.scheduleAtFixedRate(updateProviders, 500, 500, TimeUnit.MILLISECONDS);
 
         // 注册下有provider的类
-        /*BackgroundExecutor.execute(new Runnable() {
+        BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 long startTime = System.currentTimeMillis();
@@ -159,7 +159,7 @@ public class InjectorService implements ExportService {
                     registerClass(provider);
                 }
             }
-        });*/
+        });
     }
 
     @Override
@@ -527,6 +527,7 @@ public class InjectorService implements ExportService {
         @Override
         public void run() {
             // 调用provide方法
+            LogUtil.d(TAG,"进入UpdateProviderRunnable");
             long startTime = System.currentTimeMillis();
             Map<InjectParam, Object> result = new HashMap<>();
             int provideResult = provider.provides(result);
