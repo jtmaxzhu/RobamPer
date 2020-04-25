@@ -1,4 +1,4 @@
-package com.robam.rper.activity;
+package com.robam.rper.activity.temp;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.robam.rper.R;
+import com.robam.rper.activity.BaseActivity;
 import com.robam.rper.annotation.EntryActivity;
 import com.robam.rper.serviceTest.DownloadService;
 import com.robam.rper.serviceTest.MyService;
@@ -32,6 +33,7 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
     public static final int UPDATE_TEXT = 1;
 
     private TextView textView;
+    private TextView textView2;
     private Handler handler = new Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -70,7 +72,18 @@ public class ServiceActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
+        Bundle bundle = getIntent().getExtras();
+        String name = bundle.getString("name");
+        String phone = bundle.getString("phone");
+
         textView = findViewById(R.id.Mytext);
+        textView2 = findViewById(R.id.Mytext2);
+
+        textView.setText(name);
+        textView2.setText(phone);
+
+
+
         Button changText = findViewById(R.id.change_text);
         Button startService = findViewById(R.id.start_service);
         Button stopService = findViewById(R.id.stop_service);

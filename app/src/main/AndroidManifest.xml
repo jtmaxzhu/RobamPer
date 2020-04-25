@@ -50,7 +50,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.ServiceActivity" />
+        <activity android:name=".activity.temp.ServiceActivity" />
 
         <service
             android:name=".service.MonkeyFloatService"
@@ -62,17 +62,17 @@
             android:exported="true" />
 
         <activity android:name=".activity.MonkeyActivity" />
-        <activity android:name=".activity.ProgressBarActivity" />
+        <activity android:name=".activity.temp.ProgressBarActivity" />
         <activity android:name=".activity.RuntimePermissionActivity" />
         <activity android:name=".activity.AdbSettingActivity" />
         <activity android:name=".activity.BroadcastActivity" />
-        <activity android:name=".activity.ListViewActivity" />
+        <activity android:name=".activity.temp.ListViewActivity" />
         <activity android:name=".activity.PerformanceActivity" />
-        <activity android:name=".activity.testdemo" />
+        <activity android:name=".activity.temp.testdemo" />
         <activity
             android:name=".activity.IndexActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.ListMyActivity" />
+        <activity android:name=".activity.temp.ListMyActivity" />
         <activity
             android:name=".activity.PermissionDialogActivity"
             android:theme="@style/AppDialogTheme" />

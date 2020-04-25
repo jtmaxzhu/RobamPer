@@ -33,7 +33,7 @@ static int current_size = 0;
  * @param param 多少MB
  * @return
  */
-jint Java_com_alipay_hulu_shared_display_items_MemoryTools_fillMemory(JNIEnv *env, jclass clz,
+jint Java_com_robam_rper_display_items_MemTools_fillMemory(JNIEnv *env, jclass clz,
                                                                       jint param) {
     int mb_per_int = 1024 / sizeof(int) * 1024;
     memory_list = (int **) malloc(param * sizeof(int *));
@@ -59,7 +59,7 @@ jint Java_com_alipay_hulu_shared_display_items_MemoryTools_fillMemory(JNIEnv *en
  * Method:    releaseMemory
  * Signature: ()I
  */
-jint Java_com_alipay_hulu_shared_display_items_MemoryTools_releaseMemory(JNIEnv * env, jclass clz) {
+jint Java_com_robam_rper_display_items_MemTools_releaseMemory(JNIEnv * env, jclass clz) {
     if (memory_list == NULL) {
         return 0;
     }

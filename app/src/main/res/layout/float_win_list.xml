@@ -33,16 +33,15 @@
 
     <TextView
         android:id="@+id/display_content"
-        android:layout_width="180dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:focusable="false"
         android:layout_gravity="center_vertical"
-        android:textColor="@color/colorLayoutBackground"
-        android:text="sdsdsds"
+        android:focusable="false"
+        android:gravity="center"
         android:maxLines="2"
-        android:textSize="12sp"
-        />
+        android:text="sdsdsds"
+        android:textColor="@color/colorLayoutBackground"
+        android:textSize="12sp" />
     <TextView
         android:id="@+id/display_trigger"
         android:layout_height="wrap_content"

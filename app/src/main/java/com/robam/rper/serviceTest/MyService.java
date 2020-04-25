@@ -13,12 +13,10 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.robam.rper.R;
-import com.robam.rper.activity.ServiceActivity;
+import com.robam.rper.activity.temp.ServiceActivity;
 import com.robam.rper.annotation.Param;
 import com.robam.rper.annotation.Provider;
 import com.robam.rper.util.LogUtil;
-
-import static com.liulishuo.filedownloader.util.DownloadServiceNotConnectedHelper.startForeground;
 
 
 @Provider(@Param(value = "MyService"))

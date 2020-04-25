@@ -552,7 +552,7 @@ public class InjectorService implements ExportService {
                         }
                         if (reference.messageValid(provideItem.getValue(), providerInfo.isForce())) {
                             //LogUtil.d(TAG, "Update param " + provideItem.getKey().getName() + " to " + provideItem.getValue());
-
+                            LogUtil.d("MEM1","运行update"+Thread.currentThread().getName());
                             Message msg = service.messageHandler.obtainMessage(MessageProcessHandler.message);
                             msg.obj = new Pair<>(provideItem.getKey().getName(), provideItem.getValue());
 

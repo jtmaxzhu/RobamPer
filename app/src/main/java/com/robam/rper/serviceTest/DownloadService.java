@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.robam.rper.R;
 import com.robam.rper.activity.MyApplication;
-import com.robam.rper.activity.ServiceActivity;
+import com.robam.rper.activity.temp.ServiceActivity;
 
 import java.io.File;
 

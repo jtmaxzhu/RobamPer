@@ -1,4 +1,4 @@
-package com.robam.rper.activity;
+package com.robam.rper.activity.temp;
 
 
 import android.graphics.Rect;
@@ -6,22 +6,20 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robam.rper.R;
-import com.robam.rper.annotation.EntryActivity;
+import com.robam.rper.activity.BaseActivity;
 import com.robam.rper.util.LogUtil;
 
 import java.lang.ref.WeakReference;
 
 
 //@EntryActivity(icon = R.drawable.xn, name = "进度条", index = 4)
-public class ProgressBarActivity extends BaseActivity  {
+public class ProgressBarActivity extends BaseActivity {
 
     private static final String TAG = ProgressBarActivity.class.getSimpleName();
     public static final int UPDATE_TEXT = 1;

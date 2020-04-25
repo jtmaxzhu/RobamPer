@@ -155,7 +155,7 @@ public class DisplayManager {
         currentDisplayInfo = newInfos;
         //绑定服务
         if (connection == null && currentDisplayInfo.size() > 0){
-            start();
+             start();
         }else if (connection != null && currentDisplayInfo.size() == 0){
             stop();
         }
