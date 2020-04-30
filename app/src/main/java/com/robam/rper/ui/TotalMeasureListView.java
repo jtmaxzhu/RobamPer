@@ -7,7 +7,7 @@ import android.widget.ListView;
 /**
  * author : liuxiaohu
  * date   : 2019/11/5 10:18
- * desc   :
+ * desc   : 重写listView这样能够有滑动效果，使用默认listview只能显示一行
  * version: 1.0
  */
 public class TotalMeasureListView extends ListView {

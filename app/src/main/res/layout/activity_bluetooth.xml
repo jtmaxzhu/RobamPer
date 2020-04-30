@@ -1,0 +1,61 @@
+<!--<android.support.v4.widget.DrawerLayout-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/head_layout"
+        layout="@layout/head_panel_layout"/>
+
+    <TextView
+        android:id="@+id/showRssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head_layout"
+        android:layout_marginTop="20dp"
+        android:text="hello_man" />
+
+    <Button
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/showRssi"
+        android:layout_alignLeft="@+id/showRssi"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="45dp"
+        android:text="打开蓝牙" />
+
+    <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/open"
+        android:layout_alignBottom="@+id/open"
+        android:layout_centerHorizontal="true"
+        android:text="关闭蓝牙" />
+
+    <EditText
+        android:id="@+id/bluetoothName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/open"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="请输入蓝牙名称">
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/show"
+        android:onClick="show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/close"
+        android:layout_alignBottom="@+id/close"
+        android:layout_alignParentRight="true"
+        android:text="信号强度" />
+
+
+</RelativeLayout>

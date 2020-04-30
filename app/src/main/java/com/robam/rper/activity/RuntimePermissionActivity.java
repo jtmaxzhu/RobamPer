@@ -2,6 +2,7 @@ package com.robam.rper.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -17,9 +18,11 @@ import android.widget.Toast;
 import com.robam.rper.R;
 import com.robam.rper.annotation.EntryActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //@EntryActivity(icon = R.drawable.xn, name = "动态权限", index = 5)
 public class RuntimePermissionActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

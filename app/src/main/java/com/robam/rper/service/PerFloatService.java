@@ -356,7 +356,7 @@ public class PerFloatService extends BaseService {
         wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         wmParams.format = 1;
-        wmParams.alpha = 1F;
+        wmParams.alpha = 1.0F;
 
         displayedViews = new ArrayList<>();
         wm.addView(view, wmParams);

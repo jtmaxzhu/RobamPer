@@ -20,7 +20,7 @@ import com.robam.rper.ui.CustomView;
  * desc   :
  * version: 1.0
  */
-@EntryActivity(icon = R.drawable.xn, name = "自定义View", index = 4)
+//@EntryActivity(icon = R.drawable.xn, name = "自定义View", index = 4)
 public class testdemo extends BaseActivity implements View.OnClickListener {
     private CustomView customView;
     private RelativeLayout rlCustomeView;

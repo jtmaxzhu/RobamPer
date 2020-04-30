@@ -89,6 +89,14 @@
                     android:dividerHeight="0dip">
                 </com.robam.rper.ui.TotalMeasureListView>
 
+               <!-- <ListView
+                    android:id="@+id/perform_float_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/divider_color"
+                    android:dividerHeight="0dip">
+                </ListView>-->
+
 
                 <include layout="@layout/divider" />
 
